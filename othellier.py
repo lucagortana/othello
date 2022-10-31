@@ -52,9 +52,6 @@ class Othellier:
             except IndexError:
                 pass # gestion des effets de bord 
                 
-        # if not a_des_voisins :
-            #print("Tu ne peux pas placer ton pion ici, il doit etre accolé à au moins un pion de l'adversaire ")
-        
         return a_des_voisins 
 
 
@@ -103,7 +100,6 @@ class Othellier:
                         
                         if self.cases[directions[sens_][0], directions[sens_][1]] == joueur and len(captures_temporaires)>0: # and joueur not in captures_temporaires:
                             binomes.append(directions[sens_])
-                            print("captures_temporaires", captures_temporaires)
                             for item in captures_temporaires:
                                 captures.append(item)
                             break # pas besoin d'aller voir plus loin une fois qu'on a trouvé un binome 
@@ -112,14 +108,9 @@ class Othellier:
                             break
                 except IndexError:
                     pass
-            #print("les binomes trouvés pour le sens {sens} sont : ".format(sens = sens_), binomes)
-            #print("les captures trouvées pour le sens {sens} sont : ".format(sens = sens_), captures_temporaires)      
 
-        # if len(binomes) == 0:
-            # print("tu ne peux pas placer ton jeton ici, tu ne captures aucun pion!")
         if len(binomes) != 0:
             a_un_binome = True
-            #print('Bravo, ton coup te permet de capturer {n_capture} pion(s)'.format(n_capture = len(captures)))
         return a_un_binome, binomes, captures 
     
     def mise_a_jour(self, choix, captures, joueur):
@@ -144,7 +135,6 @@ class Othellier:
         for case in cases_libres:
             if self.a_des_voisins((case[0],case[1]), adversaire) and self.a_des_binomes((case[0],case[1]), joueur, adversaire)[0]:
                 peut_jouer = True
-                # print("peut jouer car {case}".format(case = case))
                 break # Si il y a au moins un possibilité pour le jouer de jouer, on arrete ici 
         return peut_jouer
 
@@ -152,8 +142,7 @@ class Othellier:
         '''
         Cette fonction renvoie le numéro du joueur gagnant
         '''
-        print("np.where(self.cases == 1)",np.where(self.cases == 1, True, False).sum())
-        print("np.where(self.cases == 2)",np.where(self.cases == 2, True, False).sum())        
+       
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
             print("joueur 1 a gagné")
         elif np.where(self.cases == 1, True, False).sum() < np.where(self.cases == 2, True, False).sum() : 
