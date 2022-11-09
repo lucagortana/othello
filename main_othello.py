@@ -23,4 +23,20 @@ from partie import partie
 
 # Par défaut, joueur1 = True et joueur2 = False 
 
-partie(False, False)
+#partie(False, False)
+
+
+# ____________ 
+
+from othellier import Othellier
+
+debut_partie = np.zeros([8,8]) 
+debut_partie[4,3] = 1   # pion noir 
+debut_partie[3,4] = 1   # pion noir 
+debut_partie[3,3] = 2   # pion blanc 
+debut_partie[4,4] = 2   # pion blanc 
+
+#othellier = Othellier(debut_partie) 
+#othellier.fonction_evaluation(1,2)
+
+partie(True, False)

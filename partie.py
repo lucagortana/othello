@@ -1,5 +1,5 @@
 import numpy as np
-from othellier import Othellier , Choix
+from othellier import Othellier
 
 
 def partie(joueur1 = True, joueur2 = False):
@@ -13,28 +13,29 @@ def partie(joueur1 = True, joueur2 = False):
     debut_partie[4,4] = 2   # pion blanc 
 
     # On initialise l'othellier 
-    othellier = Othellier(debut_partie) 
+    othellier = Othellier(debut_partie, joueur1, joueur2) 
 
     # On initialise les joueurs pour le premier tour (les noirs commencent toujours)
     # à chaque tour, la valeur de joueur et adversaire s'échangent 
-    joueur = 1, joueur1
-    adversaire = 2 , joueur2
+    #joueur = 1, joueur1 ---> on en a plus besoin, c'est un attribut au sein de othellier !!! 
+    #adversaire = 2 , joueur2 ---> on en a plus besoin, c'est un attribut au sein de othellier !!! 
 
     # le jeu continue tant qu'il reste au moins une case vide 
+
     while (othellier.cases == 0).any():
         # Il se peut que le joueur ne puisse pas jouer. 
         # On vérifie avec cette fontion : 
-        if othellier.peut_jouer(joueur[0], adversaire[0]) :
+        if othellier.peut_jouer() :
             # on donne un aperçu de l'othellier 
             print(othellier.cases)
-            othellier.tour(Choix(joueur[0], joueur[1]), joueur[0], joueur[1], adversaire[0])
+            othellier.tour(othellier.Choix())
             # au tour de l'autre joueur de jouer : 
-            joueur, adversaire = adversaire, joueur 
-            print(" C'est au tour de joueur {joueur}".format(joueur = joueur[0]))
+            othellier.joueur[0], othellier.adversaire[0] = othellier.adversaire[0], othellier.joueur[0]
+            print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
         else : 
-            print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = joueur[0]))
-            joueur, adversaire = adversaire, joueur 
-            print(" C'est au tour de joueur {joueur}".format(joueur = joueur[0]))
+            print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
+            othellier.joueur[0], othellier.adversaire[0] = othellier.adversaire[0], othellier.joueur[0]
+            print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
 
     print("C'est la fin de la partie!")
     print(othellier.cases)

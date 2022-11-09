@@ -5,11 +5,18 @@ import random as rd
 
 class Othellier:
     '''
-    Cette classe modélise le plateau de jeu (=l'othellier) 
+    Cette classe modélise l'état du jeu à un moment donnné :
+    - le plateau de jeu (=l'othellier) 
+    - à qui est ce de jouer ? 
     '''
 
-    def __init__(self, cases):
+    def __init__(self, cases, joueur1, joueur2):
         self.cases = cases 
+        self.joueur = [1 , joueur1]       # Le joueur 1 (=les noirs) commence toujours
+        self.adversaire = [2 , joueur2]   # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
+        # les valeurs pour joueur1 et joueur2 sont
+        # True (si la personne qui joue est réelle) 
+        # False (si c'est un ordinateur qui joue)
     
     def case_libre(self, choix):
         '''
@@ -27,7 +34,7 @@ class Othellier:
 
         return case_libre
 
-    def a_des_voisins(self, choix, adversaire):
+    def a_des_voisins(self, choix):
         '''
         Cette fonction permet de déterminer si une case choisie par le joueur, 
         pour un othellier donné, est accolée à un pion de l'adversaire 
@@ -43,10 +50,11 @@ class Othellier:
             [choix[0]+1, choix[1]-1],   # ------ -- voisin en bas à gauche 
             [choix[0]-1, choix[1]+1] ]  # ------ -- voisin en haut à droite 
 
+    
         for i in range(len(indices_voisins)) :
             try:
-                if 7 >= indices_voisins[i][0] >= 0 and 7>= indices_voisins[i][1]>=0:
-                    if self.cases[indices_voisins[i][0], indices_voisins[i][1]] == adversaire :
+                if 7 >= indices_voisins[i][0] >= 0 and 7 >= indices_voisins[i][1]>=0:
+                    if self.cases[indices_voisins[i][0], indices_voisins[i][1]] == self.adversaire[0] :
                         a_des_voisins = True 
                         break
             except IndexError:
@@ -55,9 +63,9 @@ class Othellier:
         return a_des_voisins 
 
 
-    def a_des_binomes(self, choix, joueur, adversaire):
+    def a_des_binomes(self, choix):
         '''
-        Cette fonction permet :
+        Cette fonction :
         - détermine si le choix de la case permet de capturer des jetons adverses. 
         - renvoie les indices des pions capturés 
 
@@ -77,7 +85,7 @@ class Othellier:
         for sens_ in sens :
 
             captures_temporaires = []
-            for i in range(1,7): # 7 pas dans un sens pour essayer de trouver un binome. 
+            for i in range(1,8): # 7 pas dans un sens pour essayer de trouver un binome. 
                 try : 
                     directions = { 'haut' : (choix[0]-i, choix[1]), 
                         'bas' : (choix[0]+i, choix[1]), 
@@ -90,7 +98,7 @@ class Othellier:
 
                     if 0 <= directions[sens_][0] <=7 and 0 <= directions[sens_][1] <=7: 
                     # NB : cette ligne complète le "try" car si les valeurs sont négatives, il n'y a pas d'exception levée pas le except ... 
-                        if self.cases[directions[sens_][0], directions[sens_][1]] == adversaire:
+                        if self.cases[directions[sens_][0], directions[sens_][1]] == self.adversaire[0]:
                             captures_temporaires.append(directions[sens_]) 
 
                         elif self.cases[directions[sens_][0], directions[sens_][1]] == 0 :
@@ -98,12 +106,12 @@ class Othellier:
                             captures_temporaires = []
                             break # Si il y a un trou, ça casse la dynamique !! 
                         
-                        if self.cases[directions[sens_][0], directions[sens_][1]] == joueur and len(captures_temporaires)>0: # and joueur not in captures_temporaires:
+                        if self.cases[directions[sens_][0], directions[sens_][1]] == self.joueur[0] and len(captures_temporaires)>0: # and joueur not in captures_temporaires:
                             binomes.append(directions[sens_])
                             for item in captures_temporaires:
                                 captures.append(item)
                             break # pas besoin d'aller voir plus loin une fois qu'on a trouvé un binome 
-                        if self.cases[directions[sens_][0], directions[sens_][1]] == joueur and len(captures_temporaires) == 0:
+                        if self.cases[directions[sens_][0], directions[sens_][1]] == self.joueur[0] and len(captures_temporaires) == 0:
                             # si on rencontre un pion de le meme couleur que celui du joueur, alors on ne captures rien! --> on arrete 
                             break
                 except IndexError:
@@ -113,19 +121,19 @@ class Othellier:
             a_un_binome = True
         return a_un_binome, binomes, captures 
     
-    def mise_a_jour(self, choix, captures, joueur):
+    def mise_a_jour(self, choix, captures):
         '''
         Cette fonction met à jour l'othellier à la suite du choix du joueur 
         ''' 
         try:
-            self.cases[choix[0], choix[1]] = joueur # on place le pion sur la case choisie pas le joueur 
+            self.cases[choix[0], choix[1]] = self.joueur[0] # on place le pion sur la case choisie pas le joueur 
             for capture in captures:
-                self.cases[capture[0], capture[1]] = joueur # on retourne les pions capturés 
+                self.cases[capture[0], capture[1]] = self.joueur[0] # on retourne les pions capturés 
         except IndexError:
             pass
 
 
-    def peut_jouer(self, joueur, adversaire):
+    def peut_jouer(self):
         '''
         on regarde parmi les cases libres restantes si le joueur peut y placer un jeton.
         Si ce n'est pas possible, il doit passer son tour.
@@ -133,7 +141,7 @@ class Othellier:
         peut_jouer = False
         cases_libres = list(zip(np.where(self.cases == 0)[0], np.where(self.cases == 0)[1]))
         for case in cases_libres:
-            if self.a_des_voisins((case[0],case[1]), adversaire) and self.a_des_binomes((case[0],case[1]), joueur, adversaire)[0]:
+            if self.a_des_voisins((case[0],case[1])) and self.a_des_binomes((case[0],case[1]))[0]:
                 peut_jouer = True
                 break # Si il y a au moins un possibilité pour le jouer de jouer, on arrete ici 
         return peut_jouer
@@ -150,7 +158,7 @@ class Othellier:
         else : 
             print("égalité !!")
 
-    def tour(self, choix, joueur, joueur_, adversaire):
+    def tour(self, choix):
         '''
         Cette fonction représente un tour de jeu. 
         On spécifie dans le paramètre "joueur" à quel joueur est le tour (1 ou 2) 
@@ -163,12 +171,13 @@ class Othellier:
         
         # Il ne peut pas entrer n'importe quelle case : 
         
+        
         while est_sur_othellier(choix) == False or \
         self.case_libre(choix) == False or \
-        self.a_des_voisins(choix,adversaire) == False or \
-        self.a_des_binomes(choix, joueur, adversaire)[0] == False:
+        self.a_des_voisins(choix) == False or \
+        self.a_des_binomes(choix)[0] == False:
 
-            if joueur_ == True : # on ne print que si c'est une personne réelle 
+            if self.joueur[1] == True : # on ne print que si c'est une personne réelle 
 
                 # 1 - La case doit avoir un sens (ie être sur l'échiquier)
                 if est_sur_othellier(choix) == False :
@@ -179,50 +188,72 @@ class Othellier:
                     print("Tu ne peux pas jouer là, la case est déjà prise")
 
                 # 3 - La case choisie doit être accolée à au moins un pion de son adversaire
-                if self.a_des_voisins(choix,adversaire) == False:
+                if self.a_des_voisins(choix) == False:
                     print("Tu ne peux pas placer ton pion ici, il doit etre accolé à au moins un pion de l'adversaire ")
                 
                 #  4 - On vérifie maintenant qu'en plaçant son pion ici, le joueur capture effectivement 
                 # des jetons de son adversaire. Sinon, il n'a pas le droit de placer son pion ici.
-                if self.a_des_binomes(choix, joueur, adversaire)[0] == False:
+                if self.a_des_binomes(choix)[0] == False:
                     print("tu ne peux pas placer ton jeton ici, tu ne captures aucun pion!")
 
-            choix = Choix(joueur, joueur_)
+            choix = self.Choix()
 
         # Une fois les 4 conditions vérifiées, on peut renvoyer l'othellier avec les nouvelles valeurs 
-        print("Le joueur ", joueur, " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ))
-        print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix, joueur, adversaire)[2])))
-        print( "en position ", self.a_des_binomes(choix, joueur, adversaire)[2])
-        self.mise_a_jour(choix, self.a_des_binomes(choix, joueur, adversaire)[2], joueur)
+        print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ))
+        print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
+        print( "en position ", self.a_des_binomes(choix)[2])
+        self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
+
+
+    def fonction_evaluation(self):
+        '''
+        Cette fonction return pour chaque case jouable, 
+        le nombre de jeton(s) retourné(s) si le joueur joue sur la case en question. 
+        '''
+        promesses_de_gain = {}
+        #print(np.where(self.cases == 0, True, False))
+        for i in range(0,8):
+            for j in range(0,8):
+                case = [i,j]
+                if self.cases[i][j] == 0: 
+                    promesses_de_gain[(case[0],case[1])] = self.a_des_binomes(case)[2]
+                    if len(self.a_des_binomes(case)[2]) > 0:
+                        print('La position ', (case[0] + 1, case[1] + 1), ' a une promesse de gain de ', len(self.a_des_binomes(case)[2]))
+            
+
+    def Choix(self):
+        '''
+        Le joueur chosit la case sur laquelle il veut placer son jeton 
+        '''
+        self.fonction_evaluation()
+        if self.joueur[1] == True: 
+
+            choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
+            while choix_ == False:
+                choix = input('joueur {joueur}, où veux tu placer ton pion ? '.format(joueur = self.joueur[0]))
+                # input fournit un str --> on fait en sorte d'avoir une liste 
+                try:
+                    choix = [int(item) for item in choix.split(',')]
+                    # On réindexe le choix du joueur pour avoir une indexation à 0 (python-compatible)
+                    choix[0] = choix[0] - 1 # Réindexage de la ligne 
+                    choix[1] = choix[1] - 1 # Réindexage de la colonne 
+                    choix_ = True
+
+                except ValueError:
+                    print("Rentre ton choix sous la forme <n°ligne>,<n°colonne> stp :) ")
+                except IndexError:
+                    print("Merci de choisir des chiffres entre 1 et 8")
+        
+        else : 
+            # Dans le cas où c'est l'ordinateur qui joue, il choisit une case au hasard.
+            # Si la case ne permet pas de jouer, il choisira de nouveau. 
+            choix = [rd.randint(0,7), rd.randint(0,7)]
+
+        return choix 
+
+
 
 # -------------------------------------- FONCTIONS -----------------------------------------
-
-def Choix(joueur, joueur_):
-    '''
-    Le joueur chosit la case sur laquelle il veut placer son jeton 
-    '''
-    if joueur_ == True: 
-
-        choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
-        while choix_ == False:
-            choix = input('joueur {joueur}, où veux tu placer ton pion ? '.format(joueur = joueur))
-            # input fournit un str --> on fait en sorte d'avoir une liste 
-            try:
-                choix = [int(item) for item in choix.split(',')]
-                # On réindexe le choix du joueur pour avoir une indexation à 0 (python-compatible)
-                choix[0] = choix[0] - 1 # Réindexage de la ligne 
-                choix[1] = choix[1] - 1 # Réindexage de la colonne 
-                choix_ = True
-
-            except ValueError:
-                print("Rentre ton choix sous la forme <n°ligne>,<n°colonne> stp :) ")
-    
-    else : 
-        # Dans le cas où c'est l'ordinateur qui joue, il choisit une case au hasard.
-        # Si la case ne permet pas de jouer, il choisira de nouveau. 
-        choix = [rd.randint(0,7), rd.randint(0,7)]
-
-    return choix 
 
 def est_sur_othellier(choix):
     '''
