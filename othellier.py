@@ -217,15 +217,20 @@ class Othellier:
                 case = [i,j]
                 if self.cases[i][j] == 0: 
                     promesses_de_gain[(case[0],case[1])] = self.a_des_binomes(case)[2]
-                    if len(self.a_des_binomes(case)[2]) > 0:
-                        print('La position ', (case[0] + 1, case[1] + 1), ' a une promesse de gain de ', len(self.a_des_binomes(case)[2]))
+        return promesses_de_gain
             
 
     def Choix(self):
         '''
         Le joueur chosit la case sur laquelle il veut placer son jeton 
         '''
-        self.fonction_evaluation()
+        promesse_gain = self.fonction_evaluation()
+        for i in range(0,8):
+            for j in range(0,8):
+                case = [i,j]
+                if self.cases[i][j] == 0:
+                    if len(promesse_gain[(i,j)]) > 0:
+                        print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
         if self.joueur[1] == True: 
 
             choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
