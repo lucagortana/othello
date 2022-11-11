@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} 
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{caption} 
+\usepackage{siunitx} 
+\usepackage{multicol}
+\usepackage{eso-pic,graphicx,transparent}
+\sisetup{output-decimal-marker={,},range-phrase=--,range-units=single,exponent-product=\cdot}
+\graphicspath{ {Images/} }
+\usepackage{hyperref} 
+\usepackage{gensymb}
+\hypersetup{bookmarksopen=true, bookmarksopenlevel=0,linkcolor={black}}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[round]{natbib}
+\bibliographystyle{abbrvnat}
+
+\setlength{\topmargin}{1pt}
+
+\begin{document}
+\date{Novembre 2022}
+
+\begin{center}
+\large
+AgroParisTech ~~  DA - IODAA  \medskip\\ 
+\vspace{0.3cm}
+\Large
+{\bf Devoir maison nº2 : IA Solve}
+\vspace{0.4cm}
+%\Large{2007-2008}\\
+\small
+%\large{(20 juin 2013)}
+\end{center}
+\hrule
+%\maketitle
+
+%\section{Recommandations}
+\noindent
+
+\vspace{0.2cm}
+
+\begin{center}
+\textbf{Élèves:}\\
+Hélène PHILIPPE - Louis MANCERON - Luca GORTANA \\
+\end{center}
+
+\section{Introduction} 
+% ------------------------------------------------------------------------------------------------
+
+\subsection{Objectif}
+% ------------------------------------------------------------------------------------------------
+La première partie de ce devoir consiste en la création d'Othello (\textbf{Figure 1}), un jeu de plateau simple à somme nulle et à information complète. L'objectif est de le rendre jouable par des utilisateurs, puis de créer un robot capable d'anticiper les coups et d'être le plus compétitif possible. Pour ceci, nous avons créé plusieurs programmes reposant sur des principes différents.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.3\textwidth]{img_othellier.png}
+\caption{\textbf{Plateau du jeu Othello}}
+\label{fig1}
+\end{figure}
+
+\subsection{Méthodes} 
+% ------------------------------------------------------------------------------------------------
+Afin de déterminer le coup optimal à un instant t, il faut créer une \textbf{fonction d'évaluation} décrivant les gains associés à une action potentielle. Cette fonction d'évaluation est ensuite utilisée par différents algorithmes afin de sélectionner le coup optimal. Les différents algorithmes que nous avons créé afin de déterminer les choix de l'ordinateur sont les suivants:\\
+
+
+\begin{itemize}
+   \item \textbf{MinMax}, qui suppose que le meilleur choix est celui qui minimise les pertes d'un joueur tout en supposant que l'adversaire cherche au contraire à les maximiser.\\
+   
+   \item \textbf{Alpha-Beta}, une version optimisée de MinMax qui réduit le nombre de noeuds explorés.\\
+   
+   \item \textbf{MCTS (\textit{Monte Carlo Tree Search})}, basée sur la méthode de Monte Carlo qui utilise un échantillonnage aléatoire pour des problèmes déterministes.\\
+\end{itemize}
+
+\section{Fonction d'évaluation}
+% ------------------------------------------------------------------------------------------------
+
+\section{Algorithmes de décision}
+% ------------------------------------------------------------------------------------------------
+
+\subsection{MinMax}
+% ------------------------------------------------------------------------------------------------
+
+\subsection{Alpha-Beta}
+% ------------------------------------------------------------------------------------------------
+
+\subsection{MCTS}
+% ------------------------------------------------------------------------------------------------
+
+
+\section{Conclusion} 
+% ------------------------------------------------------------------------------------------------
+\subsection{Avantages} 
+% ------------------------------------------------------------------------------------------------
+
+\begin{itemize}
+   \item blablabla
+   \item blablabla
+\end{itemize}
+
+
+\subsection{Inconvénients} 
+% ------------------------------------------------------------------------------------------------
+\begin{itemize}
+   \item Patati
+   \item Patata
+\end{itemize}
+
+\end{document}
+
+
