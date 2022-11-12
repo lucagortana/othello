@@ -201,7 +201,7 @@ class Othellier:
         # Une fois les 4 conditions vérifiées, on peut renvoyer l'othellier avec les nouvelles valeurs 
         print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ))
         print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
-        print( "en position ", self.a_des_binomes(choix)[2])
+        print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
 
 
@@ -224,15 +224,14 @@ class Othellier:
         '''
         Le joueur chosit la case sur laquelle il veut placer son jeton 
         '''
-        promesse_gain = self.fonction_evaluation()
-        for i in range(0,8):
-            for j in range(0,8):
-                case = [i,j]
-                if self.cases[i][j] == 0:
-                    if len(promesse_gain[(i,j)]) > 0:
-                        print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
         if self.joueur[1] == True: 
-
+            promesse_gain = self.fonction_evaluation()
+            for i in range(0,8):
+                for j in range(0,8):
+                    case = [i,j]
+                    if self.cases[i][j] == 0:
+                        if len(promesse_gain[(i,j)]) > 0:
+                            print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
             choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
             while choix_ == False:
                 choix = input('joueur {joueur}, où veux tu placer ton pion ? '.format(joueur = self.joueur[0]))
