@@ -31,6 +31,7 @@ def genere_successeurs(echiquier): # on fournit en input un objet de classe Othe
     print(successeurs)
     '''
     print(successeurs[0].cases)
+    bite
     print()
     print(successeurs[1].cases)
     print()
