@@ -2,7 +2,7 @@ import numpy as np
 from othellier import Othellier
 
 
-def partie(joueur1 = True, joueur2 = False):
+def partie(joueur1=False, joueur2=True):
 
     # On crée un othellier :
     # en début de partie, l'othellier est tel que : 
@@ -13,7 +13,7 @@ def partie(joueur1 = True, joueur2 = False):
     debut_partie[4,4] = 2   # pion blanc 
 
     # On initialise l'othellier 
-    othellier = Othellier(debut_partie, joueur1, joueur2) 
+    othellier = Othellier(debut_partie, True, False) 
 
     # On initialise les joueurs pour le premier tour (les noirs commencent toujours)
     # à chaque tour, la valeur de joueur et adversaire s'échangent 
@@ -31,6 +31,7 @@ def partie(joueur1 = True, joueur2 = False):
             othellier.tour(othellier.Choix())
             # au tour de l'autre joueur de jouer : 
             othellier.joueur[0], othellier.adversaire[0] = othellier.adversaire[0], othellier.joueur[0]
+            othellier.joueur[1], othellier.adversaire[1] = othellier.adversaire[1], othellier.joueur[1]
             print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
         else : 
             print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))

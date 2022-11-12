@@ -33,4 +33,4 @@ from othellier import Othellier
 #othellier = Othellier(debut_partie) 
 #othellier.fonction_evaluation(1,2)
 
-partie(True, False)
+partie(False, True)
