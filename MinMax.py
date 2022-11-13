@@ -55,4 +55,29 @@ def MinMax(root, prof):
         remonte = max(valeurs_successeurs)
 '''
 
+def valeur_dico(position, dico):
+    compteur = -1
+    for element in dict.items():
+        compteur += 1
+        if compteur == position:
+            return element
 
+def MinMax(root, prof):
+    level = 0 #nous sommes à la racine
+    compteur = 0 #compteur nous permettant de ne pas explorer à chaque boucle while TOUS les noeuds, mais seulement les plus profonds
+    gain_noeud = {} 
+    gain_noeud[(0,0)] = 0 #on crée un dico donnant le gain associé à chaque noeud (au début, chaque noeud a un gain de 0)
+    othellier_noeud = {}
+    othellier_noeud[root] = (0, 0) #on crée un dico qui donne à chaque othellier généré son noeud associé
+    level = 1 #on passe au niveau supérieur
+    while level < prof: #tant que nous n'avons pas atteint les feuilles, nous continuons de générer des othelliers en retenant pour chacun leur noeud
+        for i in range(compteur, len(othellier_noeud)): #pour chaque othellier de la couche d'avant
+            nexts = genere_successeurs(valeur_dico(i, othellier_noeud)[0]) #on génère les successeurs de cet othellier
+            compteur += 1
+            branche = 0 #on initialise à la branche 0.
+            for oth_genere in nexts: #pour chaque othellier généré
+                othellier_noeud[oth_genere] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
+                gain_noeud[level, branche] = 0
+                branche += 1 
+    level += 1
+    pass #à suivre
