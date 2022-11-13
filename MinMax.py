@@ -72,15 +72,16 @@ def MinMax(root, prof):
     level = 1 #on passe au niveau supérieur
     while level < prof: #tant que nous n'avons pas atteint les feuilles, nous continuons de générer des othelliers en retenant pour chacun leur noeud
         for i in range(compteur, len(othellier_noeud)): #pour chaque othellier de la couche d'avant
-            nexts = genere_successeurs(valeur_dico(i, othellier_noeud)[0]) #on génère les successeurs de cet othellier
+            oth_pere = valeur_dico(i, othellier_noeud)[0]
+            nexts = genere_successeurs(oth_pere) #on génère les successeurs de cet othellier
             compteur += 1
             branche = 0 #on initialise à la branche 0.
             for oth_genere in nexts.items(): #pour chaque othellier généré
                 nv_oth = oth_genere[0]
                 othellier_noeud[nv_oth] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
-                gain_noeud[(level, branche)] = (0, max([len(element[1]) for element in nv_oth.fonction_evaluation().items()]))
+                gain_noeud[(level, branche)] = [(0, len(element[1])) for element in nv_oth.fonction_evaluation().items()]
                 branche += 1 
-    level += 1
+        level += 1
     pass #à suivre
 
 #successeurs = {oth_genere1: {position_possibles: cases retournables},
