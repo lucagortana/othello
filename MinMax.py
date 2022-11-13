@@ -75,9 +75,12 @@ def MinMax(root, prof):
             nexts = genere_successeurs(valeur_dico(i, othellier_noeud)[0]) #on génère les successeurs de cet othellier
             compteur += 1
             branche = 0 #on initialise à la branche 0.
-            for oth_genere in nexts: #pour chaque othellier généré
-                othellier_noeud[oth_genere] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
+            for oth_genere in nexts.items(): #pour chaque othellier généré
+                othellier_noeud[oth_genere[0]] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
                 gain_noeud[level, branche] = 0
                 branche += 1 
     level += 1
     pass #à suivre
+
+#successeurs = {oth_genere1: {position_possibles: cases retournables},
+#               oth_genere2: {position_possibles: cases retournables}}
