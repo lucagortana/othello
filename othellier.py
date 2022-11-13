@@ -251,7 +251,22 @@ class Othellier:
         else : 
             # Dans le cas où c'est l'ordinateur qui joue, il choisit une case au hasard.
             # Si la case ne permet pas de jouer, il choisira de nouveau. 
-            choix = [rd.randint(0,7), rd.randint(0,7)]
+            #choix = [rd.randint(0,7), rd.randint(0,7)]
+            promesse_gain = self.fonction_evaluation()
+            a =0
+            l= []
+            for i in range(0,8):
+                for j in range(0,8):
+                    if self.cases[i][j] == 0:
+                        if len(promesse_gain[(i,j)]) > 0:
+                            print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
+                            if a < len(promesse_gain[(i,j)]):
+                                a = len(promesse_gain[(i,j)])
+                                l=[[i,j]]
+                                choix = i,j
+                            elif a == len(promesse_gain[(i,j)]):
+                                l.append([i,j])
+                                choix = rd.choice(l)
 
         return choix 
 
