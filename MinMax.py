@@ -55,7 +55,7 @@ def MinMax(root, prof):
         remonte = max(valeurs_successeurs)
 '''
 
-def valeur_dico(position, dico):
+def valeur_dico(position, dict):
     compteur = -1
     for element in dict.items():
         compteur += 1
@@ -66,7 +66,7 @@ def MinMax(root, prof):
     level = 0 #nous sommes à la racine
     compteur = 0 #compteur nous permettant de ne pas explorer à chaque boucle while TOUS les noeuds, mais seulement les plus profonds
     gain_noeud = {} 
-    gain_noeud[(0,0)] = 0 #on crée un dico donnant le gain associé à chaque noeud (au début, chaque noeud a un gain de 0)
+    gain_noeud[(0,0)] = (0, max([len(element[1]) for element in root.fonction_evaluation().items()])) #on crée un dico donnant le gain associé à chaque noeud (au début, chaque noeud a un gain de 0)
     othellier_noeud = {}
     othellier_noeud[root] = (0, 0) #on crée un dico qui donne à chaque othellier généré son noeud associé
     level = 1 #on passe au niveau supérieur
@@ -76,10 +76,11 @@ def MinMax(root, prof):
             compteur += 1
             branche = 0 #on initialise à la branche 0.
             for oth_genere in nexts.items(): #pour chaque othellier généré
-                othellier_noeud[oth_genere[0]] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
-                gain_noeud[level, branche] = 0
+                nv_oth = oth_genere[0]
+                othellier_noeud[nv_oth] = (level, branche) #on rajoute à la liste othellier_noeud l'othellier et le noeud associé
+                gain_noeud[(level, branche)] = (0, max([len(element[1]) for element in nv_oth.fonction_evaluation().items()]))
                 branche += 1 
-    level += 1
+        level += 1
     pass #à suivre
 
 #successeurs = {oth_genere1: {position_possibles: cases retournables},
