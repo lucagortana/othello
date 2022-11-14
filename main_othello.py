@@ -9,6 +9,7 @@
 
 import numpy as np 
 from partie import partie 
+from MinMax import MinMax
 
 # -------------------------------- MAIN --------------------------------------------
 
@@ -30,7 +31,14 @@ from partie import partie
 
 from othellier import Othellier
 
-#othellier = Othellier(debut_partie) 
-#othellier.fonction_evaluation(1,2)
+debut_partie = np.zeros([8,8]) 
+debut_partie[4,3] = 1   # pion noir 
+debut_partie[3,4] = 1   # pion noir 
+debut_partie[3,3] = 2   # pion blanc 
+debut_partie[4,4] = 2   # pion blanc 
+debut_partie[4,3] = 1   # pion noir 
 
-partie(True, False)
+#othellier = Othellier(debut_partie, True, False) 
+#MinMax(othellier, 3, 1)
+
+partie(False, True)

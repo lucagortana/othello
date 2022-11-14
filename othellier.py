@@ -5,7 +5,7 @@ import random as rd
 
 class Othellier:
     '''
-    Cette classe modélise l'état du jeu à un moment donnné :
+    Cette classe modélise l'état du jeu à un moment donné :
     - le plateau de jeu (=l'othellier) 
     - à qui est ce de jouer ? 
     '''
@@ -14,9 +14,10 @@ class Othellier:
         self.cases = cases 
         self.joueur = [1 , joueur1]       # Le joueur 1 (=les noirs) commence toujours
         self.adversaire = [2 , joueur2]   # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
-        # les valeurs pour joueur1 et joueur2 sont
+        # les valeurs pour joueur1 et joueur2 sont : 
         # True (si la personne qui joue est réelle) 
         # False (si c'est un ordinateur qui joue)
+
     
     def case_libre(self, choix):
         '''
@@ -126,7 +127,7 @@ class Othellier:
         Cette fonction met à jour l'othellier à la suite du choix du joueur 
         ''' 
         try:
-            self.cases[choix[0], choix[1]] = self.joueur[0] # on place le pion sur la case choisie pas le joueur 
+            self.cases[choix[0], choix[1]] = self.joueur[0] # on place le pion sur la case choisie par le joueur 
             for capture in captures:
                 self.cases[capture[0], capture[1]] = self.joueur[0] # on retourne les pions capturés 
         except IndexError:
@@ -152,9 +153,9 @@ class Othellier:
         '''
        
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
-            print("joueur 1 a gagné")
+            print("joueur 1 gagne")
         elif np.where(self.cases == 1, True, False).sum() < np.where(self.cases == 2, True, False).sum() : 
-            print("joueur 2 a gagné")
+            print("joueur 2 gagne")
         else : 
             print("égalité !!")
 
@@ -199,24 +200,26 @@ class Othellier:
             choix = self.Choix()
 
         # Une fois les 4 conditions vérifiées, on peut renvoyer l'othellier avec les nouvelles valeurs 
-        print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ))
-        print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
-        print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
+        print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ), '. Son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])), "en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
+        #print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
+        #print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
 
 
     def fonction_evaluation(self):
         '''
-        Cette fonction return pour chaque case jouable, 
+        Cette fonction retourne pour chaque case jouable par le joeur du tour
         le nombre de jeton(s) retourné(s) si le joueur joue sur la case en question. 
         '''
         promesses_de_gain = {}
-        #print(np.where(self.cases == 0, True, False))
         for i in range(0,8):
             for j in range(0,8):
                 case = [i,j]
                 if self.cases[i][j] == 0: 
-                    promesses_de_gain[(case[0],case[1])] = self.a_des_binomes(case)[2]
+                    # chaque case jouable est associée à ses captures 
+                    if len(self.a_des_binomes(case)[2]) != 0:
+                        # on ne rajoute que les cases qui ont un interet 
+                        promesses_de_gain[(case[0],case[1])] = self.a_des_binomes(case)[2]
         return promesses_de_gain
             
 
@@ -224,14 +227,15 @@ class Othellier:
         '''
         Le joueur chosit la case sur laquelle il veut placer son jeton 
         '''
+
         if self.joueur[1] == True: 
-            promesse_gain = self.fonction_evaluation()
-            for i in range(0,8):
-                for j in range(0,8):
-                    case = [i,j]
-                    if self.cases[i][j] == 0:
-                        if len(promesse_gain[(i,j)]) > 0:
-                            print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
+            #promesse_gain = self.fonction_evaluation()
+            #for i in range(0,8):
+            #    for j in range(0,8):
+            #        case = [i,j]
+            #        if self.cases[i][j] == 0:
+            #            if len(promesse_gain[(i,j)]) > 0:
+            #                print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
             choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
             while choix_ == False:
                 choix = input('joueur {joueur}, où veux tu placer ton pion ? '.format(joueur = self.joueur[0]))
@@ -251,22 +255,7 @@ class Othellier:
         else : 
             # Dans le cas où c'est l'ordinateur qui joue, il choisit une case au hasard.
             # Si la case ne permet pas de jouer, il choisira de nouveau. 
-            #choix = [rd.randint(0,7), rd.randint(0,7)]
-            promesse_gain = self.fonction_evaluation()
-            a =0
-            l= []
-            for i in range(0,8):
-                for j in range(0,8):
-                    if self.cases[i][j] == 0:
-                        if len(promesse_gain[(i,j)]) > 0:
-                            print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
-                            if a < len(promesse_gain[(i,j)]):
-                                a = len(promesse_gain[(i,j)])
-                                l=[[i,j]]
-                                choix = i,j
-                            elif a == len(promesse_gain[(i,j)]):
-                                l.append([i,j])
-                                choix = rd.choice(l)
+            choix = [rd.randint(0,7), rd.randint(0,7)]
 
         return choix 
 
