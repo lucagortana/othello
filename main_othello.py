@@ -31,14 +31,16 @@ from MinMax import MinMax
 
 from othellier import Othellier
 
-debut_partie = np.zeros([8,8]) 
-debut_partie[4,3] = 1   # pion noir 
-debut_partie[3,4] = 1   # pion noir 
-debut_partie[3,3] = 2   # pion blanc 
-debut_partie[4,4] = 2   # pion blanc 
-debut_partie[4,3] = 1   # pion noir 
+oth_min_max = np.zeros([8,8]) 
+oth_min_max[4,3] = 1    
+oth_min_max[3,4] = 1 
+oth_min_max[3,3] = 2   
+oth_min_max[4,4] = 2   
+oth_min_max[3,2] = 1   
+oth_min_max[2,2] = 2
 
-#othellier = Othellier(debut_partie, True, False) 
-#MinMax(othellier, 3, 1)
+#print(oth_min_max)
+#othellier = Othellier(oth_min_max, False, True) 
+#minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
 partie(False, True)

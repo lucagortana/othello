@@ -34,18 +34,24 @@ def partie(joueur1 = True, joueur2 = False, prof = 3):
                 # Si le joueur est une vraie personne, on la laisse faire son choix 
                 othellier.tour(othellier.Choix())
             else : 
-                # Si le joueur est un ordinateur, on fait en sorte que son choix soit celui rendu par minMax 
-                possibilites = othellier.fonction_evaluation().keys()
-                if len(possibilites) > 0:
-                    print("L'ordinateur cherche la meilleure solution.")
-                    top_gain = -1000 # on initialise à une valeur négative très basse --> il y aura forcément mieux à un moment 
-                    meilleure_case = None 
-                    for case in possibilites:
-                        gain_case = MinMax(othellier, prof, 1)
-                        if gain_case > top_gain:
-                            top_gain = gain_case
-                            meilleure_case = case
-                othellier.tour(meilleure_case)
+                minmax = MinMax(othellier, prof, 1, gains = [], chemin = [], profondeurs = [])
+                # La fonction nous retourne l'arbre minmax avec les valeurs (définies selon l'algo minmax) pour chaque noeud 
+                # L'oarbre est sous forme de 3 listes : 
+                gains = minmax[1]
+                chemin = minmax[2]
+                profondeurs = minmax[3]
+                # On veut savoir quelle case jouer --> on prend le meilleur gain au niveau juste après l'othellier root : 
+                indices = []
+                for i in range(len(profondeurs)):
+                    if profondeurs[i] == 3:
+                        indices.append(i)
+                gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
+                chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
+                indice_top_gain = np.argmax(gains_filtres)
+                meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
+                #print("meilleure case, gain")
+                #print(meilleure_case, gains_filtres[indice_top_gain])
+                othellier.tour(meilleure_case) # on joue la case 
 
             # au tour de l'autre joueur de jouer --> on inverse les rôles 
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
