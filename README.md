@@ -1,5 +1,13 @@
-# othello
-DM IA_solve
+# Othello
+
+School project in articifial intelligence 
+
+The main objective is to implement the following algorithms: 
+- MinMax 
+- AlphaBeta 
+- MCTS 
+
+-------------------------------------------------------------------------------------------------------------------------------------------
 
 Le fichier othellier.py contient le code de la classe Othellier.  
 Le fichier partie.py contient le code de la fonction partie.  
