@@ -43,4 +43,30 @@ oth_min_max[2,2] = 2
 #othellier = Othellier(oth_min_max, False, True) 
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
-partie(False, True)
+#partie(False, 'minmax', True,'minmax')
+
+
+#-------------------------------------- FIGHTS DES ALGOS -----------------------------
+
+# on va faire affronter 2 ordinateurs au cours de 10 parties. 
+# Un avec Minmax, l'autre en choix random.
+# on va voir qui gagne le plus de parties. 
+gain_1 = 0
+gain_2 = 0
+egalite = 0
+
+for nb_partie in range(5):
+    print(nb_partie)
+    # le joueur 1 joue avec rd 
+    # le joueur 2 joue avec minmax 
+    gagnant = partie(False, None , False ,'minmax')
+    if gagnant == 1:
+        gain_1 += 1
+    elif gagnant == 2:
+        gain_2 += 1
+    else:
+        egalite += 1 
+
+print(gain_1)
+print(gain_2)
+print(egalite)

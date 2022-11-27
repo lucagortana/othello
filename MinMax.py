@@ -15,7 +15,7 @@ def genere_successeurs(echiquier): # on fournit en input un objet de classe Othe
     Cette fonction génère pour un othellier donné, tous ses successeurs possibles 
     '''
     successeurs = {} # les successeurs de l'objet donné en input seront sonsignés dans cette liste. 
-    pdg = echiquier.fonction_evaluation() # on crée le dictionnaire "promesses de gain" pour l'othellier d'interet 
+    pdg = echiquier.promesse_de_gain() # on crée le dictionnaire "promesses de gain" pour l'othellier d'interet 
     for i, case_possible in enumerate(pdg.keys()): 
         # pour chacune des cases possibles, on simule un tour
         cases = copy.deepcopy(echiquier.cases)
@@ -26,7 +26,7 @@ def genere_successeurs(echiquier): # on fournit en input un objet de classe Othe
             i.mise_a_jour(case_possible, echiquier.a_des_binomes(case_possible)[2])
             i.joueur[0], i.adversaire[0] = i.adversaire[0], i.joueur[0]
             # on l'ajoute à "successeurs" avec sa promesse de gain associée 
-            successeurs[i] = i.fonction_evaluation() # NB : il y a alors un dictionnaire dans un dictionnaire 
+            successeurs[i] = i.promesses_de_gain() # NB : il y a alors un dictionnaire dans un dictionnaire 
             
     print(successeurs)
     '''
@@ -60,7 +60,7 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
     # où c'est au joueur 1 (= pion noirs) de jouer 
     #print('gains', gains)
     #pdg = copy.deepcopy(othellier.fonction_evaluation())
-    cases_possibles = othellier.fonction_evaluation().keys() # on va envisager toutes les possibilités de jeu (= facteur de branchement)
+    cases_possibles = othellier.promesses_de_gain().keys() # on va envisager toutes les possibilités de jeu (= facteur de branchement)
     
     #cases = copy.deepcopy(othellier.cases) 
     # on "recopie" le plateau de l'othellier de départ, sinon les modifications se font sur cet othellier de départ ! 
@@ -75,7 +75,7 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
         #print(othellier.cases)
         #print(np.where(othellier.cases == 1, True, False).sum() - np.where(othellier.cases == 2, True, False).sum())
         #gains.append(np.where(othellier.cases == 1, True, False).sum() - np.where(othellier.cases == 2, True, False).sum())
-        return np.where(othellier.cases == 1, True, False).sum() - np.where(othellier.cases == 2, True, False).sum(), None, None
+        return othellier.fonction_evaluation()
 
     
     # Dans le cas où le noeud n'est pas terminal, on réapplique la fonction MinMax sur ses successeurs possibles 

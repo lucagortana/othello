@@ -10,13 +10,16 @@ class Othellier:
     - à qui est ce de jouer ? 
     '''
 
-    def __init__(self, cases, joueur1, joueur2):
+    def __init__(self, cases, joueur1,algo_j1, joueur2, algo_j2):
         self.cases = cases 
-        self.joueur = [1 , joueur1]       # Le joueur 1 (=les noirs) commence toujours
-        self.adversaire = [2 , joueur2]   # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
+        self.joueur = [1] + [joueur1] + [algo_j1]     # Le joueur 1 (=les noirs) commence toujours
+        self.adversaire = [2] + [joueur2] + [algo_j2]  # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
+        
         # les valeurs pour joueur1 et joueur2 sont : 
         # True (si la personne qui joue est réelle) 
         # False (si c'est un ordinateur qui joue)
+        # la troisième valeur est l'algorithme que va utiliser l'ordinateur 
+        # Si la deuxième valeur == True, il n'est pas nécéssaire de définir d'algorithme. 
 
     
     def case_libre(self, choix):
@@ -154,10 +157,13 @@ class Othellier:
        
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
             print("joueur 1 gagne")
+            return 1
         elif np.where(self.cases == 1, True, False).sum() < np.where(self.cases == 2, True, False).sum() : 
             print("joueur 2 gagne")
+            return 2
         else : 
             print("égalité !!")
+            return 0 
 
     def tour(self, choix):
         '''
@@ -205,8 +211,10 @@ class Othellier:
         #print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
 
-
     def fonction_evaluation(self):
+        return np.where(self.cases == self.joueur[0], True, False).sum() - np.where(self.cases == self.adversaire[0], True, False).sum(), None, None
+
+    def promesses_de_gain(self):
         '''
         Cette fonction retourne pour chaque case jouable par le joeur du tour
         le nombre de jeton(s) retourné(s) si le joueur joue sur la case en question. 
