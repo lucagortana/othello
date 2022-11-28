@@ -1,6 +1,7 @@
 import numpy as np
 from othellier import Othellier
 from MinMax import MinMax
+from alphaBeta import alphaBeta
 import random as rd 
 from random import randint 
 
@@ -35,9 +36,9 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
             if othellier.joueur[1] == True: 
                 # Si le joueur est une vraie personne, on la laisse faire son choix 
                 othellier.tour(othellier.Choix())
-            else : 
+            
+            else : # le joueur est un ordinateur 
                 if othellier.joueur[2] == 'minmax': 
-                    print('je suis un ordinateur et je joue avec minmax')
                     minmax = MinMax(othellier, prof, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
                     # La fonction nous retourne l'arbre minmax avec les valeurs (définies selon l'algo minmax) pour chaque noeud 
                     # L'arbre est sous forme de 3 listes : 
@@ -47,7 +48,7 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
                     # On veut savoir quelle case jouer --> on prend le meilleur gain au niveau juste après l'othellier root : 
                     indices = []
                     for i in range(len(profondeurs)):
-                        if profondeurs[i] == 3:
+                        if profondeurs[i] == max(profondeurs): # les indices où le noeud est juste en dessous de la racine 
                             indices.append(i)
                     gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
                     chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
@@ -58,19 +59,52 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
                     # cases du haut de l'othellier --> on efface ce biais en faisant "rd.choice(np.argwhere( gains_filtres = np.max(gains_filtres)))"
                     meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
                     othellier.tour(meilleure_case) # on joue la case 
-                elif othellier.joueur[2] == None: # choix de la case à jouer au hasard 
-                    print("je suis un ordianteur et j'ai choisi au pif")
-                    indices_poss = list(othellier.promesses_de_gain().keys())
-                    choix = rd.choice(indices_poss)
-                    othellier.tour(choix)  # on joue la case 
+
+                elif othellier.joueur[2] == None: # aucun algorithme n'est proposé 
+                    # --> le joueur va jouer la case qui donne le plus de points pour ce tour 
+                    # sans considérer plus loin --> un minmax à un seul étage (ie prof = 1 )
+
+                    minmax = MinMax(othellier, 1, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
+                    gains = minmax[1]
+                    chemin = minmax[2]
+                    profondeurs = minmax[3]
+                    indices = []
+                    print('max profondeurs ')
+                    print(max(profondeurs))
+                    for i in range(len(profondeurs)):
+                        if profondeurs[i] == max(profondeurs):
+                            indices.append(i)
+                    gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
+                    chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
+                    # on veut jouer la case qui présente le gain maximal :
+                    indice_top_gain = rd.choice(np.argwhere( gains_filtres == np.max(gains_filtres)).flatten())
+                    meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
+                    othellier.tour(meilleure_case) # on joue la case 
+
                 elif othellier.joueur[2] == 'alphaBeta':
-                    pass
+                    print('je suis un ordinateur et je joue avec alphabeta')
+                    ab = alphaBeta(othellier, prof, othellier.joueur[0], -1000, 1000, gains = [], chemin = [], profondeurs = [])
+                    gains = ab[1]
+                    chemin = ab[2]
+                    profondeurs = ab[3]
+                    indices = []
+                    for i in range(len(profondeurs)):
+                        if profondeurs[i] == 3:
+                            indices.append(i)
+                    gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
+                    chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
+                    # on veut jouer la case qui présente le gain maximal :
+                    indice_top_gain = rd.choice(np.argwhere( gains_filtres == np.max(gains_filtres)).flatten())
+                
+                    meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
+                    othellier.tour(meilleure_case) # on joue la case 
+                
                 else : 
-                    print("Vous n'avez pas bien renseigné l'algo que l'ordinateur doit utiliser! ")
-                    print(" Il ne peut donc pas jouer, veuillez recommencer.")
-                    print("Redonnez un algo à l'ordianteur parmi les suivants : None, 'minmax', 'alphaBeta'")
-                    print("Gardez la casse !! ")
-                    print("quittez avec ctrl + C ")
+                    print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
+                    print("Il ne peut donc pas jouer, veuillez recommencer.")
+                    print("Redonnez un algorithme à l'ordinateur parmi les suivants : None, 'minmax', 'alphaBeta'")
+                    print("Attention à respecter la casse !! ")
+                    exit()
 
             # au tour de l'autre joueur de jouer --> on inverse les rôles 
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur

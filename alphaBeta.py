@@ -6,7 +6,7 @@ import copy
 
 # -------------------------------------- MIN MAX ------------------------------------------------
 
-def alphaBeta(othellier, prof, min_ou_max, gains, chemin, profondeurs):
+def alphaBeta(othellier, prof, min_ou_max, alpha, beta,  gains, chemin, profondeurs):
     '''
     othellier = l'othellier pour lequel  on veut faire l'évaluation
     prof = la profondeur jusqu'à laquelle on veut réaliser l'algorithme minmax
@@ -37,7 +37,7 @@ def alphaBeta(othellier, prof, min_ou_max, gains, chemin, profondeurs):
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
 
             # on enregistre la valeur que cet othellier nous rapporterait 
-            score = alphaBeta(oth_fils, prof - 1, min_ou_max, gains, chemin, profondeurs )[0]
+            score = alphaBeta(oth_fils, prof - 1, min_ou_max, alpha, beta, gains, chemin, profondeurs)[0]
             gains.append(score)
             chemin.append(case)
             profondeurs.append(prof)
@@ -55,7 +55,7 @@ def alphaBeta(othellier, prof, min_ou_max, gains, chemin, profondeurs):
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur    
 
             # on enregistre la valeur que cet othellier nous rapporterait si la case était jouée  
-            score = alphaBeta(oth_fils, prof - 1, min_ou_max, gains, chemin, profondeurs)[0]
+            score = alphaBeta(oth_fils, prof - 1, min_ou_max, alpha, beta, gains, chemin, profondeurs)[0]
             gains.append(score)
             chemin.append(case)
             profondeurs.append(prof)
