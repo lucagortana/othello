@@ -38,9 +38,9 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
             else : 
                 if othellier.joueur[2] == 'minmax': 
                     print('je suis un ordinateur et je joue avec minmax')
-                    minmax = MinMax(othellier, prof, 1, gains = [], chemin = [], profondeurs = [])
+                    minmax = MinMax(othellier, prof, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
                     # La fonction nous retourne l'arbre minmax avec les valeurs (définies selon l'algo minmax) pour chaque noeud 
-                    # L'oarbre est sous forme de 3 listes : 
+                    # L'arbre est sous forme de 3 listes : 
                     gains = minmax[1]
                     chemin = minmax[2]
                     profondeurs = minmax[3]
@@ -51,18 +51,21 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
                             indices.append(i)
                     gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
                     chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
-                    indice_top_gain = np.argmax(gains_filtres)
+                    # on veut jouer la case qui présente le gain maximal :
+                    indice_top_gain = rd.choice(np.argwhere( gains_filtres == np.max(gains_filtres)).flatten())
+                    # NB : on ne fait pas juste np.argmax(gains_filtres) car on n'obtiendrait toujours l'argument 
+                    # du premier item maximal. Or, notre liste est ordonnée --> on jouerait alors plus souvent des 
+                    # cases du haut de l'othellier --> on efface ce biais en faisant "rd.choice(np.argwhere( gains_filtres = np.max(gains_filtres)))"
                     meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
-                    #print("meilleure case, gain")
-                    #print(meilleure_case, gains_filtres[indice_top_gain])
                     othellier.tour(meilleure_case) # on joue la case 
-                elif othellier.joueur[2] == None:
+                elif othellier.joueur[2] == None: # choix de la case à jouer au hasard 
                     print("je suis un ordianteur et j'ai choisi au pif")
-                    choix = [rd.randint(0,7), rd.randint(0,7)]
+                    indices_poss = list(othellier.promesses_de_gain().keys())
+                    choix = rd.choice(indices_poss)
                     othellier.tour(choix)  # on joue la case 
                 elif othellier.joueur[2] == 'alphaBeta':
                     pass
-                else : # algo MCTS 
+                else : 
                     print("Vous n'avez pas bien renseigné l'algo que l'ordinateur doit utiliser! ")
                     print(" Il ne peut donc pas jouer, veuillez recommencer.")
                     print("Redonnez un algo à l'ordianteur parmi les suivants : None, 'minmax', 'alphaBeta'")

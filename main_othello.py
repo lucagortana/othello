@@ -55,11 +55,12 @@ gain_1 = 0
 gain_2 = 0
 egalite = 0
 
-for nb_partie in range(5):
+
+for nb_partie in range(6):
     print(nb_partie)
     # le joueur 1 joue avec rd 
     # le joueur 2 joue avec minmax 
-    gagnant = partie(False, None , False ,'minmax')
+    gagnant = partie(False, 'minmax' , False ,'minmax')
     if gagnant == 1:
         gain_1 += 1
     elif gagnant == 2:
@@ -70,3 +71,4 @@ for nb_partie in range(5):
 print(gain_1)
 print(gain_2)
 print(egalite)
+
