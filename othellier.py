@@ -10,11 +10,11 @@ class Othellier:
     - à qui est ce de jouer ? 
     '''
 
-    def __init__(self, cases, joueur1,algo_j1, joueur2, algo_j2):
+    def __init__(self, cases, joueur1,algo_j1,prof_algo_j1, joueur2, algo_j2,prof_algo_j2):
         self.cases = cases 
-        self.joueur = [1] + [joueur1] + [algo_j1]     # Le joueur 1 (=les noirs) commence toujours
-        self.adversaire = [2] + [joueur2] + [algo_j2]  # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
-        
+        self.joueur = [1] + [joueur1] + [algo_j1] + [prof_algo_j1]   # Le joueur 1 (=les noirs) commence toujours
+        self.adversaire = [2] + [joueur2] + [algo_j2] +[prof_algo_j2] # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
+
         # les valeurs pour joueur1 et joueur2 sont : 
         # True (si la personne qui joue est réelle) 
         # False (si c'est un ordinateur qui joue)
@@ -206,7 +206,7 @@ class Othellier:
             choix = self.Choix()
 
         # Une fois les 4 conditions vérifiées, on peut renvoyer l'othellier avec les nouvelles valeurs 
-        print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ), '. Son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])), "en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
+        #print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ), '. Son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])), "en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         #print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
         #print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])

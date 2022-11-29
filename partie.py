@@ -6,7 +6,7 @@ import random as rd
 from random import randint 
 
 
-def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, prof = 3):
+def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3):
 
     # On crée un othellier :
     # en début de partie, l'othellier est tel que : 
@@ -17,7 +17,7 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
     debut_partie[4,4] = 2   # pion blanc 
 
     # On initialise l'othellier 
-    othellier = Othellier(debut_partie, joueur1, algo_j1, joueur2, algo_j2) 
+    othellier = Othellier(debut_partie, joueur1, algo_j1, prof_algo_j1, joueur2, algo_j2, prof_algo_j2) 
 
     # On initialise les joueurs pour le premier tour (les noirs commencent toujours)
     # à chaque tour, la valeur de joueur et adversaire s'échangent 
@@ -27,19 +27,19 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
     # le jeu continue tant qu'il reste au moins une case vide 
 
     while (othellier.cases == 0).any():
-        print(othellier.joueur)
+        #print(othellier.joueur)
         # Il se peut que le joueur ne puisse pas jouer. 
         # On vérifie avec cette fontion : 
         if othellier.peut_jouer() :
             # on donne un aperçu de l'othellier 
-            print(othellier.cases)
+            #print(othellier.cases)
             if othellier.joueur[1] == True: 
                 # Si le joueur est une vraie personne, on la laisse faire son choix 
                 othellier.tour(othellier.Choix())
             
             else : # le joueur est un ordinateur 
                 if othellier.joueur[2] == 'minmax': 
-                    minmax = MinMax(othellier, prof, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
+                    minmax = MinMax(othellier, othellier.joueur[3], othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
                     # La fonction nous retourne l'arbre minmax avec les valeurs (définies selon l'algo minmax) pour chaque noeud 
                     # L'arbre est sous forme de 3 listes : 
                     gains = minmax[1]
@@ -63,14 +63,11 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
                 elif othellier.joueur[2] == None: # aucun algorithme n'est proposé 
                     # --> le joueur va jouer la case qui donne le plus de points pour ce tour 
                     # sans considérer plus loin --> un minmax à un seul étage (ie prof = 1 )
-
                     minmax = MinMax(othellier, 1, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
                     gains = minmax[1]
                     chemin = minmax[2]
                     profondeurs = minmax[3]
                     indices = []
-                    print('max profondeurs ')
-                    print(max(profondeurs))
                     for i in range(len(profondeurs)):
                         if profondeurs[i] == max(profondeurs):
                             indices.append(i)
@@ -82,20 +79,20 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
                     othellier.tour(meilleure_case) # on joue la case 
 
                 elif othellier.joueur[2] == 'alphaBeta':
-                    print('je suis un ordinateur et je joue avec alphabeta')
-                    ab = alphaBeta(othellier, prof, othellier.joueur[0], -1000, 1000, gains = [], chemin = [], profondeurs = [])
+                    ab = alphaBeta(othellier, othellier.joueur[3], othellier.joueur[0], -1000, 1000, gains = [], chemin = [], profondeurs = [])
                     gains = ab[1]
                     chemin = ab[2]
                     profondeurs = ab[3]
                     indices = []
+                    
                     for i in range(len(profondeurs)):
-                        if profondeurs[i] == 3:
+                        if profondeurs[i] == othellier.joueur[3]:
                             indices.append(i)
+                    
                     gains_filtres = [ gains[i] for i in indices] # les gains de l'étage juste en dessous de l'othellier racine 
                     chemin_filtres = [ chemin[i] for i in indices] # les cases associées 
                     # on veut jouer la case qui présente le gain maximal :
                     indice_top_gain = rd.choice(np.argwhere( gains_filtres == np.max(gains_filtres)).flatten())
-                
                     meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
                     othellier.tour(meilleure_case) # on joue la case 
                 
@@ -108,14 +105,14 @@ def partie(joueur1 = True , algo_j1 = None , joueur2 = False, algo_j2 = None, pr
 
             # au tour de l'autre joueur de jouer --> on inverse les rôles 
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
-            print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
+            #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
         else : 
-            print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
+            #print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
-            print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
+            #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
 
-    print("C'est la fin de la partie!")
-    print(othellier.cases)
+    #print("C'est la fin de la partie!")
+    #print(othellier.cases)
     gagnant = othellier.qui_gagne()
-    print("Félicitation, joueur {gagnant}, tu as gagné! ".format(gagnant = gagnant))
+    #print("Félicitation, joueur {gagnant}, tu as gagné! ".format(gagnant = gagnant))
     return gagnant
