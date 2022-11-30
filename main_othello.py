@@ -63,7 +63,7 @@ for nb_partie in range(1):
     print(nb_partie)
     # le joueur 1 joue avec rd 
     # le joueur 2 joue avec minmax 
-    gagnant = partie(False, None , False , 'alphaBeta')
+    gagnant = partie(True, None , False , 'alphaBeta')
     if gagnant == 1:
         gain_1 += 1
     elif gagnant == 2:
