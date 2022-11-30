@@ -149,12 +149,14 @@ class Othellier:
                 peut_jouer = True
                 break # Si il y a au moins un possibilité pour le jouer de jouer, on arrete ici 
         return peut_jouer
+    def termine(self):
+        if np.where(self.cases != 0, True, False).sum() == 64:
+            print("toutes les cases ")
 
     def qui_gagne(self):
         '''
         Cette fonction renvoie le numéro du joueur gagnant
         '''
-       
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
             print("joueur 1 gagne")
             return 1
