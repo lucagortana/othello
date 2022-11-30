@@ -11,6 +11,7 @@ import numpy as np
 from partie import partie 
 from MinMax import MinMax
 from alphaBeta import alphaBeta
+from MCTS import MCTS
 
 import time
 
@@ -29,7 +30,6 @@ import time
 
 #partie(False, False)
 
-
 # ____________ 
 
 from othellier import Othellier
@@ -46,7 +46,13 @@ oth_min_max[2,2] = 2
 #othellier = Othellier(oth_min_max, False, True) 
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
-#partie(False, 'minmax', True,'minmax')
+#partie(False, 'MCTS', True,'minmax')
+partie(False, 'MCTS', 3, True, None, None) 
+
+# rappel des paramètres : 
+# partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
+
+'''
 
 
 #-------------------------------------- FIGHTS DES ALGOS -----------------------------
@@ -105,3 +111,5 @@ for p in range(1,3):
 print("--- %s seconds ---" % (time.time() - start_time))
 
 print(prof_test)
+
+'''

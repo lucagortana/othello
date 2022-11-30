@@ -2,6 +2,7 @@ import numpy as np
 from othellier import Othellier
 from MinMax import MinMax
 from alphaBeta import alphaBeta
+from MCTS import MCTS
 import random as rd 
 from random import randint 
 
@@ -96,10 +97,13 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                     meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
                     othellier.tour(meilleure_case) # on joue la case 
                 
+                elif othellier.joueur[2] == 'MCTS':
+                    meilleure_case = MCTS(othellier, othellier.joueur[3], 1.14)
+                    othellier.tour(meilleure_case)
                 else : 
                     print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
                     print("Il ne peut donc pas jouer, veuillez recommencer.")
-                    print("Redonnez un algorithme à l'ordinateur parmi les suivants : None, 'minmax', 'alphaBeta'")
+                    print("Redonnez un algorithme à l'ordinateur parmi les suivants : None, 'minmax', 'alphaBeta', 'MCTS")
                     print("Attention à respecter la casse !! ")
                     exit()
 
