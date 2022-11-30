@@ -18,7 +18,6 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
     '''
 
     cases_possibles = othellier.promesses_de_gain().keys() # on va envisager toutes les possibilités de jeu (= facteur de branchement)
-    # on "recopie" le plateau de l'othellier de départ, sinon les modifications se font sur cet othellier de départ ! 
 
     max_score = -1000 # initialisation --> le max score sera forcément meilleur que ça 
     min_score = 1000 # initialisation 
@@ -34,7 +33,7 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
     if othellier.joueur[0] == min_ou_max: #min_ou_max vaut soit 1 soit 2 selon quel joueur on souhaite maximiser
         for case in cases_possibles:
             # on crée le nouvel othellier qui découlerait de ce choix de case : 
-            oth_fils = copy.deepcopy(othellier)
+            oth_fils = copy.deepcopy(othellier) # on "recopie" le plateau de l'othellier de départ, sinon les modifications se font sur cet othellier de départ ! 
             oth_fils.mise_a_jour(case, othellier.a_des_binomes(case)[2])
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
 
@@ -49,7 +48,7 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
     
     else: # idem que précédemment, mais pour un noeud min 
         for case in cases_possibles:
-            oth_fils = copy.deepcopy(othellier) 
+            oth_fils = copy.deepcopy(othellier) # on "recopie" le plateau de l'othellier de départ, sinon les modifications se font sur cet othellier de départ ! 
             oth_fils.mise_a_jour(case, othellier.a_des_binomes(case)[2])
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur    
 
@@ -63,25 +62,5 @@ def MinMax(othellier, prof, min_ou_max, gains, chemin, profondeurs):
         return min_score , gains, chemin , profondeurs 
 
 
-# --------------------- à conserver ???? 
 
-def genere_successeurs(echiquier): # on fournit en input un objet de classe Othellier
-    '''
-    Cette fonction génère pour un othellier donné, tous ses successeurs possibles 
-    '''
-    successeurs = {} # les successeurs de l'objet donné en input seront sonsignés dans cette liste. 
-    pdg = echiquier.promesse_de_gain() # on crée le dictionnaire "promesses de gain" pour l'othellier d'interet 
-    for i, case_possible in enumerate(pdg.keys()): 
-        # pour chacune des cases possibles, on simule un tour
-        cases = copy.deepcopy(echiquier.cases)
-        if len(pdg[case_possible]) != 0: 
-            # on crée un othellier à partir de celui d'interet 
-            i = Othellier(cases, echiquier.joueur, echiquier.adversaire)
-            # on le met a jour comme si on avait joué case_possible
-            i.mise_a_jour(case_possible, echiquier.a_des_binomes(case_possible)[2])
-            i.joueur[0], i.adversaire[0] = i.adversaire[0], i.joueur[0]
-            # on l'ajoute à "successeurs" avec sa promesse de gain associée 
-            successeurs[i] = i.promesses_de_gain() # NB : il y a alors un dictionnaire dans un dictionnaire 
-            
-    print(successeurs)
-    return successeurs
+

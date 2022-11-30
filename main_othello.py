@@ -11,6 +11,7 @@ import numpy as np
 from partie import partie 
 from MinMax import MinMax
 from alphaBeta import alphaBeta
+from MCTS import MCTS
 
 import time
 
@@ -29,7 +30,6 @@ import time
 
 #partie(False, False)
 
-
 # ____________ 
 
 from othellier import Othellier
@@ -46,7 +46,13 @@ oth_min_max[2,2] = 2
 #othellier = Othellier(oth_min_max, False, True) 
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
-#partie(False, 'minmax', True,'minmax')
+#partie(False, 'MCTS', True,'minmax')
+partie(False, 'MCTS', 3, True, None, None) 
+
+# rappel des paramètres : 
+# partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
+
+'''
 
 
 #-------------------------------------- FIGHTS DES ALGOS -----------------------------
@@ -63,7 +69,7 @@ for nb_partie in range(1):
     print(nb_partie)
     # le joueur 1 joue avec rd 
     # le joueur 2 joue avec minmax 
-    gagnant = partie(True, None , False , 'alphaBeta')
+    gagnant = partie(False, None , False , 'alphaBeta')
     if gagnant == 1:
         gain_1 += 1
     elif gagnant == 2:
@@ -75,7 +81,13 @@ print(gain_1)
 print(gain_2)
 print(egalite)
 
+    prof_test[p] = gain_A , gain_B  
 
-
-
+# faire un histogramme à partir du dictionnaire prof_test : en abscisse les profondeurs 
+# pour chaque profondeur 2 barres : une pour "parties gagnées par A et l'autre parties gagnées par B 
+# # ou alors : une seule barre avec la difference gain A - B"
 print("--- %s seconds ---" % (time.time() - start_time))
+
+print(prof_test)
+
+'''
