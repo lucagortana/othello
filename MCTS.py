@@ -35,10 +35,12 @@ MCTS indiquera son successeur qui présente le meilleur w/n
 class noeud:
     def __init__(self, othellier, case, n, w, parent):
         self.othellier = othellier 
+        self.feuille = True # True si le noeud est une feuille (ie plus de place sur l'othellier, ou bien pas de successeurs générés)
         self.n = n 
         self.w = w 
         self.parent = parent # un objet appartenant à la classe noeud 
         self.case = case
+        #self.case_a_jouer = list(othellier.promesses_de_gain().keys()) # tous les moves qui menent à un succeseur 
         self.successeurs = []
         # N = pere.n 
     
@@ -53,23 +55,35 @@ class noeud:
             return + 10000 
     
     def play_out(self):
-        while (self.othellier.cases == 0).any() == 0 : # on va jusque finir la partie 
+        while (self.othellier.cases == 0).any() == 0 : # on va jusqu'à finir la partie 
             choix = rd.choice(self.othellier.promesses_de_gain().keys())
             self.othellier.tour(choix)
             self.othellier.joueur, self.othellier.adversaire = self.othellier.adversaire, self.othellier.joueur
         return self.othellier.qui_gagne()
     
-    def genere_successeurs(self): # on fournit en input un objet de classe noeud
-        #successeurs = []
+    def genere_successeurs(self):
         cases_possibles = self.othellier.promesses_de_gain().keys() 
         for case in cases_possibles:
             oth_fils = copy.deepcopy(self.othellier)
             oth_fils.mise_a_jour(case, self.othellier.a_des_binomes(case)[2])
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
-            #successeurs.append(noeud(oth_fils, case, n=0, w=0)))
             self.successeurs.append(noeud(oth_fils, case, n=0, w=0, parent=self))
-        #return successeurs
+            self.feuille = False # En generant des successeurs, on perd le statut de feuille 
 
+
+    def genere_successeur(self, case):
+        oth_fils = copy.deepcopy(self.othellier)
+        oth_fils.mise_a_jour(case, self.othellier.a_des_binomes(case)[2])
+        oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
+        self.successeurs.append(noeud(oth_fils, case, n=0, w=0, parent=self))
+        print('self.case_a_jouer AVANT')
+        print(self.case_a_jouer)
+        self.case_a_jouer.remove(case)
+        print('self.case_a_jouer APRES')
+        print(self.case_a_jouer)
+        self.feuille = False
+        
+    
 
 def MCTS(othellier, nb_iter, C):
     '''
@@ -79,49 +93,79 @@ def MCTS(othellier, nb_iter, C):
     # Initialisation de l'arbre  
     oth_racine = copy.deepcopy(othellier)
     noeud_racine = noeud(oth_racine, None, n=0, w=0, parent=None)
+    print(noeud_racine.successeurs)
     noeud_racine.genere_successeurs()
+    noeud_racine.feuille = False
+    print(noeud_racine.successeurs)
     # l'arbre est initialisé :) 
+    #show_tree(noeud_racine)
+    print(noeud_racine)
 
     # On commence les iterations 
     for i in range(nb_iter):
         noeud_courant = noeud_racine # on part de la racine de l'arbre 
 
-        # Si le noeud a déjà été visité  (noeud_courant.n > 0) ET qu'il n'est pas associé à un othellier terminal, ie (noeud_courant.othellier.cases == 0).any(), 
-        # alors on continue de descendre dans l'arbre en choisissant le successeur avec le meilleur UCB  
-        # if noeud_courant != feuille : 
-        while (noeud_courant.n > 0) and (noeud_courant.othellier.cases == 0).any(): 
-            print("on avance dans l'arbre")
-            print("je choisi le successeur qui a le meilleur UCB")
-            noeud_courant.genere_successeurs()
-            best_UCB = noeud_courant.successeurs[0].UCB(C) # on initialise le score UCB avec celui du premier successeur
+        # On explore l'arbre jusqu'à trouver des feuilles.
+        # J'avance dans l'arbre en choisissant le noeud avec le meilleur UCB 
+
+        # I - Selection 
+        #while noeud_courant.feuille == False :  # and (noeud_courant.othellier.cases == 0).any(): 
+        while len(noeud_courant.successeurs) > 0 :
+            best_UCB = -100  # initialisation 
             for s in noeud_courant.successeurs:
                 if s.UCB(C) > best_UCB:
                     best_UCB = s.UCB(C)
                     noeud_courant = s 
 
-        if noeud_courant.n == 0:
-            print('roll out')
-            gagnant = noeud_courant.play_out()
-            # gagnant vaut 1, 2 ou 0.
-            # Or, on ne souhaite remonter 1 si le joueur du noeud évalué a gagné : 
-            if gagnant == noeud_racine.othellier.joueur[0]:
-                result =  1
-                result_adversaire = 0
-            else:
-                result = 0
-                result_adversaire = 1
+        print('noeud_courant.case')
+        print(noeud_courant.case)
+
+        # len(noeud_courant.successeurs) --> Le noeud est une feuille. 
+        # 2 possibilités : 
+        # a - Il a été exploré une fois mais pas développé (noeud_courant.n == 1) 
+        #     --> on le developpe et on réalisera un play_out sur un de ces successeurs 
+        # b - il n'a jamais été exploré du tout (ie noeud_courant.n == 0) Dans ce cas on va réaliser un play out 
         
-        if not (noeud_courant.othellier.cases == 0).any(): # le noeud est associé à un othellier dont la partie est finie 
-            gagnant = noeud_courant.othellier.qui_gagne()
-            if gagnant == noeud_racine.othellier.joueur[0]:
-                result =  1
-                result_adversaire = 0
-            elif gagnant == 0: # cas d'égalité 
-                result = 0
-                result_adversaire = 0
-            else:
-                result = 0
-                result_adversaire = 1
+    
+        if noeud_courant.n != 0:
+            noeud_courant.genere_successeurs() # on developpe le noeud = II - EXPANSION
+            # et on fait un play out sur le successeur avec le plus haut UCB
+            best_UCB = -100  # initialisation 
+            for s in noeud_courant.successeurs:
+                if s.UCB(C) > best_UCB:
+                    best_UCB = s.UCB(C)
+                    noeud_courant = s 
+
+
+        #else: # noeud_courant.n == 0:
+        print("play out")
+        gagnant = noeud_courant.play_out()
+        # gagnant vaut 1, 2 ou 0.
+        # Or, on ne souhaite remonter 1 si le joueur du noeud évalué a gagné : 
+        if gagnant == noeud_racine.othellier.joueur[0]:
+            result =  1
+            result_adversaire = 0
+        elif gagnant == 0: # cas d'égalité 
+            result = 0
+            result_adversaire = 0
+        else : 
+            result = 0
+            result_adversaire = 1
+
+
+        '''
+            if not (noeud_courant.othellier.cases == 0).any(): # le noeud est associé à un othellier dont la partie est finie 
+        gagnant = noeud_courant.othellier.qui_gagne()
+        if gagnant == noeud_racine.othellier.joueur[0]:
+            result =  1
+            result_adversaire = 0
+        elif gagnant == 0: # cas d'égalité 
+            result = 0
+            result_adversaire = 0
+        else:
+            result = 0
+            result_adversaire = 1
+        '''
         
         # maintenant on retropropage le resultat 
         while noeud_courant != None:
@@ -135,19 +179,19 @@ def MCTS(othellier, nb_iter, C):
                 noeud_courant.w += result_adversaire
 
             noeud_courant = noeud_courant.parent 
+    
 
     # maintenant que toutes les itérations ont été réalis&ees, on choisit quel est la meilleure case à jouer 
-    
     best_s = noeud_racine.successeurs[0]
     best_score = best_s.w / best_s.n
     for s in noeud_racine.successeurs:
-        if (s.w/s.n) > best_score:
+        if (s.w/s.n) > best_score: # !!! si le nombre d'iterations est inferieure au nombre de successeurs, division par zero !!! 
             best_s = s 
-    
+    print('MCTS a choisi la case', s.case)
     return s.case
 
 
-# ------------------------------- fonctions copiées collées depuis git hub --------------------------
+# ------------------------------- fonctions quasi copiées collées depuis git hub --------------------------
 
         
 def show_tree(noeud, indent='', max_depth=3):
