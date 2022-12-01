@@ -139,7 +139,7 @@ class Othellier:
 
     def peut_jouer(self):
         '''
-        on regarde parmi les cases libres restantes si le joueur peut y placer un jeton.
+        On regarde parmi les cases libres restantes si le joueur peut y placer un jeton.
         Si ce n'est pas possible, il doit passer son tour.
         '''
         peut_jouer = False
@@ -149,6 +149,7 @@ class Othellier:
                 peut_jouer = True
                 break # Si il y a au moins un possibilité pour le jouer de jouer, on arrete ici 
         return peut_jouer
+
     def termine(self):
         if np.where(self.cases != 0, True, False).sum() == 64:
             print("toutes les cases ")

@@ -55,10 +55,15 @@ class noeud:
             return + 10000 
     
     def play_out(self):
-        while (self.othellier.cases == 0).any() == 0 : # on va jusqu'à finir la partie 
-            choix = rd.choice(self.othellier.promesses_de_gain().keys())
+        #print('coucou')
+        while (self.othellier.cases == 0).any(): # on va jusqu'à finir la partie 
+            #print("je rentre dans le while")
+            if len(self.othellier.promesses_de_gain().keys()) == 0:
+                return self.othellier.qui_gagne()
+            choix = rd.choice(list(self.othellier.promesses_de_gain().keys()))
             self.othellier.tour(choix)
             self.othellier.joueur, self.othellier.adversaire = self.othellier.adversaire, self.othellier.joueur
+
         return self.othellier.qui_gagne()
     
     def genere_successeurs(self):
@@ -76,11 +81,7 @@ class noeud:
         oth_fils.mise_a_jour(case, self.othellier.a_des_binomes(case)[2])
         oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
         self.successeurs.append(noeud(oth_fils, case, n=0, w=0, parent=self))
-        print('self.case_a_jouer AVANT')
-        print(self.case_a_jouer)
         self.case_a_jouer.remove(case)
-        print('self.case_a_jouer APRES')
-        print(self.case_a_jouer)
         self.feuille = False
         
     
@@ -96,7 +97,7 @@ def MCTS(othellier, nb_iter, C):
     print(noeud_racine.successeurs)
     noeud_racine.genere_successeurs()
     noeud_racine.feuille = False
-    print(noeud_racine.successeurs)
+    print([s.case for s in noeud_racine.successeurs])
     # l'arbre est initialisé :) 
     #show_tree(noeud_racine)
     print(noeud_racine)
@@ -181,13 +182,18 @@ def MCTS(othellier, nb_iter, C):
             noeud_courant = noeud_courant.parent 
     
 
-    # maintenant que toutes les itérations ont été réalis&ees, on choisit quel est la meilleure case à jouer 
+    # maintenant que toutes les itérations ont été réalisées, on choisit quelle est la meilleure case à jouer 
     best_s = noeud_racine.successeurs[0]
     best_score = best_s.w / best_s.n
-    for s in noeud_racine.successeurs:
-        if (s.w/s.n) > best_score: # !!! si le nombre d'iterations est inferieure au nombre de successeurs, division par zero !!! 
-            best_s = s 
+
+    for s in noeud_racine.successeurs: # on shuffle (?) --> de telle sorte qu'en cas d'égalité, ce ne soit pas toujours la même case qui soit explorée en premier
+        try:
+            if (s.w/s.n) > best_score: # !!! si le nombre d'iterations est inferieure au nombre de successeurs, division par zero !!! 
+                best_s = s 
+        except ZeroDivisionError:
+            pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
     print('MCTS a choisi la case', s.case)
+    print(' parmi les cases : ',[ s.case for s in  noeud_racine.successeurs])
     return s.case
 
 

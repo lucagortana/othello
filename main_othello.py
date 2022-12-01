@@ -42,6 +42,8 @@ oth_min_max[4,4] = 2
 oth_min_max[3,2] = 1   
 oth_min_max[2,2] = 2
 
+
+
 #print(oth_min_max)
 #othellier = Othellier(oth_min_max, False, True) 
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
