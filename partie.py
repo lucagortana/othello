@@ -17,7 +17,7 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
     debut_partie[3,3] = 2   # pion blanc 
     debut_partie[4,4] = 2   # pion blanc 
 
-    #debut_partie = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
+    #debut_partie_ = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
 
     # On initialise l'othellier 
     othellier = Othellier(debut_partie, joueur1, algo_j1, prof_algo_j1, joueur2, algo_j2, prof_algo_j2) 
