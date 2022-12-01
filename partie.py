@@ -117,13 +117,13 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
 
              
         else : #joueur ne peut pas jouer 
-            print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
+            #print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
             # Si adversaire ne peut pas jouer non plus, alors personne ne peut jouer et la partie se finit. 
             peut_pas_jouer +=1 
             if peut_pas_jouer == 2:
-                print("Joueur {joueur} tu ne peux pas jouer non plus !! ".format(joueur = othellier.joueur[0]))
-                print("Plus personne ne peux jouer ...   ;'(    La partie est finie")
+                #print("Joueur {joueur} tu ne peux pas jouer non plus !! ".format(joueur = othellier.joueur[0]))
+                #print("Plus personne ne peux jouer ...   ;'(    La partie est finie")
                 return othellier.qui_gagne()
             #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
 
