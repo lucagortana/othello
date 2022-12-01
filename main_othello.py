@@ -63,47 +63,25 @@ start_time = time.time()
 # on va faire affronter 2 ordinateurs au cours de 10 parties. 
 # Un avec Minmax, l'autre en choix random.
 # on va voir qui gagne le plus de parties. 
-prof_test = {}
-for p in range(1,3):
-    print('nous en sommes à la profondeur {p}'.format(p=p))
+gain_1 = 0
+gain_2 = 0
+egalite = 0
 
-    gain_A = 0
-    gain_B = 0
-    egalite = 0
+for nb_partie in range(1):
+    print(nb_partie)
+    # le joueur 1 joue avec rd 
+    # le joueur 2 joue avec minmax 
+    gagnant = partie(False, None , False , 'alphaBeta')
+    if gagnant == 1:
+        gain_1 += 1
+    elif gagnant == 2:
+        gain_2 += 1
+    else:
+        egalite += 1 
 
-    for nb_partie in range(3):
-        print('nb_partie=', nb_partie)
-
-        joueur_A = None
-        joueur_B = 'alphaBeta'
-
-        if nb_partie%2 ==0: # une partie sur 2 c'est le joueur A qui commence 
-            print('Joueur_A commence')
-            #gagnant = partie(False, None, 1, False, joueur_B, p) 
-            gagnant = partie(joueur1 = False , algo_j1 = None, prof_algo_j1 = 1, joueur2 = False, algo_j2 = 'alphaBeta', prof_algo_j2 = p)
-            # rappel des paramètres : partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
-            
-            if gagnant == 1:
-                gain_A += 1
-            elif gagnant == 2:
-                gain_B += 1
-            else:
-                egalite += 1 
-
-        if nb_partie%2 !=0: # une partie sur 2 c'est le joueur B qui commence 
-            print('Joueur_B commence')
-            gagnant = partie(False, joueur_B,1, False, None, p)
-            
-            if gagnant == 1:
-                gain_B += 1
-            elif gagnant == 2:
-                gain_A += 1
-            else:
-                egalite += 1 
-
-    print(gain_A)
-    print(gain_B)
-    print(egalite)
+print(gain_1)
+print(gain_2)
+print(egalite)
 
     prof_test[p] = gain_A , gain_B  
 

@@ -47,7 +47,7 @@ class noeud:
     def is_terminal(self):
         pass
 
-    def UCB(self, C):
+    def UCB(self, C): #selection
         try: 
             return self.w/self.n + C * sqrt( log(self.parent.n) /self.n )
         except:
@@ -130,7 +130,7 @@ def MCTS(othellier, nb_iter, C):
     
         if noeud_courant.n != 0:
             noeud_courant.genere_successeurs() # on developpe le noeud = II - EXPANSION
-            # et on fait un play out sur le successeur avec le plus haut UCB
+            # et on fait un play out surs le successeur avec le plus haut UCB
             best_UCB = -100  # initialisation 
             for s in noeud_courant.successeurs:
                 if s.UCB(C) > best_UCB:
