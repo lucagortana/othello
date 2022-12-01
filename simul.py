@@ -68,7 +68,7 @@ def simul():
 
 
     data = pd.DataFrame({col1:list1,col2:list2, col3:list3, col4:list4})
-    data.to_excel('resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
+    data.to_excel('resultats_simulations/resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
 
     # faire un histogramme à partir du dictionnaire prof_test : en abscisse les profondeurs 
     # pour chaque profondeur 2 barres : une pour "parties gagnées par A et l'autre parties gagnées par B 
