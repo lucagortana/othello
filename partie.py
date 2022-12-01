@@ -17,6 +17,8 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
     debut_partie[3,3] = 2   # pion blanc 
     debut_partie[4,4] = 2   # pion blanc 
 
+    #debut_partie_ = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
+
     # On initialise l'othellier 
     othellier = Othellier(debut_partie, joueur1, algo_j1, prof_algo_j1, joueur2, algo_j2, prof_algo_j2) 
 
@@ -27,14 +29,15 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
 
     # le jeu continue tant qu'il reste au moins une case vide 
 
-    while (othellier.cases == 0).any() and othellier.peut_jouer() and othellier.peut_jouer():
+    while (othellier.cases == 0).any() :
 
         #print(othellier.joueur)
         # Il se peut que le joueur ne puisse pas jouer. 
         # On vérifie avec cette fontion : 
-        if othellier.peut_jouer() :
+        if othellier.peut_jouer():
+            peut_pas_jouer = 0 # compteur : s'il dépasse 2 c'est que ni J1 ni J2 ne peuvent jouer --> la partie doit s'arreter 
             # on donne un aperçu de l'othellier 
-            #print(othellier.cases)
+            print(othellier.cases)
             if othellier.joueur[1] == True: 
                 # Si le joueur est une vraie personne, on la laisse faire son choix 
                 othellier.tour(othellier.Choix())
@@ -111,11 +114,16 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
             # au tour de l'autre joueur de jouer --> on inverse les rôles 
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
             #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
-        else : 
 
-            #print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
+             
+        else : #joueur ne peut pas jouer 
+            print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
-            if othellier.peut_jouer() == False:
+            # Si adversaire ne peut pas jouer non plus, alors personne ne peut jouer et la partie se finit. 
+            peut_pas_jouer +=1 
+            if peut_pas_jouer == 2:
+                print("Joueur {joueur} tu ne peux pas jouer non plus !! ".format(joueur = othellier.joueur[0]))
+                print("Plus personne ne peux jouer ...   ;'(    La partie est finie")
                 return othellier.qui_gagne()
             #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
 
