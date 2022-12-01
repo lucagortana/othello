@@ -216,7 +216,6 @@ class Othellier:
 
     def fonction_evaluation(self):
         nb = np.where(self.cases == self.joueur[0], True, False).sum() - np.where(self.cases == self.adversaire[0], True, False).sum()
-        print(nb, 'nb')
         for i in range(len(self.cases)):
             for j in range(len(self.cases)):
 
@@ -228,12 +227,9 @@ class Othellier:
                     if self.cases[i,j] == self.joueur[0]:
                         nb += 20
 
-                
                 elif ((i ==1 or i==0 or i==6 or i ==7) and ( j==0 or j==1 or j==6 or j==7 )) and not ((i== 0 or i ==7 ) and (j==0 or j==7)) :
                     if self.cases[i,j] == self.joueur[0]:
                         nb -= 30
-                
-                
 
         return nb , None, None
 

@@ -37,7 +37,7 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
         if othellier.peut_jouer():
             peut_pas_jouer = 0 # compteur : s'il dépasse 2 c'est que ni J1 ni J2 ne peuvent jouer --> la partie doit s'arreter 
             # on donne un aperçu de l'othellier 
-            print(othellier.cases)
+            #print(othellier.cases)
             if othellier.joueur[1] == True: 
                 # Si le joueur est une vraie personne, on la laisse faire son choix 
                 othellier.tour(othellier.Choix())

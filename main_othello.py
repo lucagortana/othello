@@ -42,22 +42,31 @@ oth_min_max[4,4] = 2
 oth_min_max[3,2] = 1   
 oth_min_max[2,2] = 2
 
-ma_partie_ = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
+#ma_partie_ = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
 #def __init__(self, cases, joueur1,algo_j1,prof_algo_j1, joueur2, algo_j2,prof_algo_j2):
-othellier = Othellier(ma_partie_, False,None,1, False, None,1) 
-othellier.fonction_evaluation()
+#othellier = Othellier(ma_partie_, False,None,1, False, None,1) 
+#othellier.fonction_evaluation()
+'''
 
-#print(oth_min_max)
-#othellier = Othellier(oth_min_max, False, True) 
-#minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
+
+print(oth_min_max)
+othellier = Othellier(oth_min_max, False, None, 1, True, None, 1) 
+minmax = MinMax(othellier, 2, 1, gains = [], chemin = [], profondeurs = [])
+print(minmax[0]) # min_score 
+print()
+print(minmax[1]) # gains
+print()
+print(minmax[2]) # chemin
+print()
+print(minmax[3]) # profondeurs 
 
 #partie(False, 'MCTS', True,'minmax')
 #partie(False, 'MCTS', 4, True, None, None) 
 
 # rappel des paramètres : 
 # partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
-
 '''
+
 
 
 #-------------------------------------- FIGHTS DES ALGOS -----------------------------
@@ -86,7 +95,7 @@ print(gain_1)
 print(gain_2)
 print(egalite)
 
-    prof_test[p] = gain_A , gain_B  
+prof_test[p] = gain_A , gain_B  
 
 # faire un histogramme à partir du dictionnaire prof_test : en abscisse les profondeurs 
 # pour chaque profondeur 2 barres : une pour "parties gagnées par A et l'autre parties gagnées par B 
@@ -95,4 +104,3 @@ print("--- %s seconds ---" % (time.time() - start_time))
 
 print(prof_test)
 
-'''
