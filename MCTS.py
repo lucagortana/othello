@@ -43,9 +43,6 @@ class noeud:
         #self.case_a_jouer = list(othellier.promesses_de_gain().keys()) # tous les moves qui menent à un succeseur 
         self.successeurs = []
         # N = pere.n 
-    
-    def is_terminal(self):
-        pass
 
     def UCB(self, C): #selection
         try: 
@@ -94,13 +91,12 @@ def MCTS(othellier, nb_iter, C):
     # Initialisation de l'arbre  
     oth_racine = copy.deepcopy(othellier)
     noeud_racine = noeud(oth_racine, None, n=0, w=0, parent=None)
-    print(noeud_racine.successeurs)
     noeud_racine.genere_successeurs()
     noeud_racine.feuille = False
-    print([s.case for s in noeud_racine.successeurs])
+    #print([s.case for s in noeud_racine.successeurs])
     # l'arbre est initialisé :) 
     #show_tree(noeud_racine)
-    print(noeud_racine)
+    #print(noeud_racine)
 
     # On commence les iterations 
     for i in range(nb_iter):
@@ -117,9 +113,6 @@ def MCTS(othellier, nb_iter, C):
                 if s.UCB(C) > best_UCB:
                     best_UCB = s.UCB(C)
                     noeud_courant = s 
-
-        print('noeud_courant.case')
-        print(noeud_courant.case)
 
         # len(noeud_courant.successeurs) --> Le noeud est une feuille. 
         # 2 possibilités : 
@@ -139,7 +132,7 @@ def MCTS(othellier, nb_iter, C):
 
 
         #else: # noeud_courant.n == 0:
-        print("play out")
+        #print("play out")
         gagnant = noeud_courant.play_out()
         # gagnant vaut 1, 2 ou 0.
         # Or, on ne souhaite remonter 1 si le joueur du noeud évalué a gagné : 
@@ -193,27 +186,6 @@ def MCTS(othellier, nb_iter, C):
         except ZeroDivisionError:
             pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
     print('MCTS a choisi la case', s.case)
-    print(' parmi les cases : ',[ s.case for s in  noeud_racine.successeurs])
+    #print(' parmi les cases : ',[ s.case for s in  noeud_racine.successeurs])
     return s.case
 
-
-# ------------------------------- fonctions quasi copiées collées depuis git hub --------------------------
-
-        
-def show_tree(noeud, indent='', max_depth=3):
-    if max_depth < 0:
-        return
-    if noeud is None:
-        return
-    if noeud.parent is None:
-        print('%sroot' % indent)
-    else:
-        player = noeud.parent.othellier.joueur[0]
-        case = noeud.case
-        print('%s%s %s %d %.3f' % (
-            indent,
-            noeud.n,
-            noeud.w,
-        ))
-    for child in sorted(noeud.successeurs, key=lambda i: i.n, reverse=True):
-        show_tree(child, indent + '  ', max_depth - 1)
