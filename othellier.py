@@ -215,7 +215,27 @@ class Othellier:
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
 
     def fonction_evaluation(self):
-        return np.where(self.cases == self.joueur[0], True, False).sum() - np.where(self.cases == self.adversaire[0], True, False).sum(), None, None
+        nb = np.where(self.cases == self.joueur[0], True, False).sum() - np.where(self.cases == self.adversaire[0], True, False).sum()
+        print(nb, 'nb')
+        for i in range(len(self.cases)):
+            for j in range(len(self.cases)):
+
+                if (j==0 or j==7) and (i ==0 or i ==7) : # si on est dans les coins, bonus 
+                    if self.cases[i,j] == self.joueur[0]:
+                        nb += 100
+                
+                elif (i== 0 or i ==7 ) or (j==0 or j==7):   # si on est sur les bords hors coins et proches-coins
+                    if self.cases[i,j] == self.joueur[0]:
+                        nb += 20
+
+                
+                elif ((i ==1 or i==0 or i==6 or i ==7) and ( j==0 or j==1 or j==6 or j==7 )) and not ((i== 0 or i ==7 ) and (j==0 or j==7)) :
+                    if self.cases[i,j] == self.joueur[0]:
+                        nb -= 30
+                
+                
+
+        return nb , None, None
 
     def promesses_de_gain(self):
         '''

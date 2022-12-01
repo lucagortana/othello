@@ -42,14 +42,17 @@ oth_min_max[4,4] = 2
 oth_min_max[3,2] = 1   
 oth_min_max[2,2] = 2
 
-
+ma_partie_ = np.array([[ 2, 2, 2, 0, 0, 0, 0, 2,],[1, 2, 2, 1, 1, 1, 2, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 1, 2, 2, 2, 1, 1,],[2, 2, 2, 2, 2, 2, 2, 1,],[2, 2, 2, 1, 1, 2, 2, 1,],[2, 2, 1, 1, 2, 2, 2, 1,],[2, 1, 1, 1, 1, 1, 1, 1,]])
+#def __init__(self, cases, joueur1,algo_j1,prof_algo_j1, joueur2, algo_j2,prof_algo_j2):
+othellier = Othellier(ma_partie_, False,None,1, False, None,1) 
+othellier.fonction_evaluation()
 
 #print(oth_min_max)
 #othellier = Othellier(oth_min_max, False, True) 
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
 #partie(False, 'MCTS', True,'minmax')
-partie(False, 'MCTS', 4, True, None, None) 
+#partie(False, 'MCTS', 4, True, None, None) 
 
 # rappel des paramètres : 
 # partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
