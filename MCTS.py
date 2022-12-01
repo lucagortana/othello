@@ -45,7 +45,7 @@ class noeud:
     def is_terminal(self):
         pass
 
-    def UCB(self, C):
+    def UCB(self, C): #selection
         try: 
             return self.w/self.n + C * sqrt( log(self.parent.n) /self.n )
         except:
@@ -91,7 +91,7 @@ def MCTS(othellier, nb_iter, C):
         # if noeud_courant != feuille : 
         while (noeud_courant.n > 0) and (noeud_courant.othellier.cases == 0).any(): 
             print("on avance dans l'arbre")
-            print("je choisi le successeur qui a le meilleur UCB")
+            print("je choisis le successeur qui a le meilleur UCB")
             noeud_courant.genere_successeurs()
             best_UCB = noeud_courant.successeurs[0].UCB(C) # on initialise le score UCB avec celui du premier successeur
             for s in noeud_courant.successeurs:
