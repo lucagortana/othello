@@ -27,7 +27,8 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
 
     # le jeu continue tant qu'il reste au moins une case vide 
 
-    while (othellier.cases == 0).any():
+    while (othellier.cases == 0).any() and othellier.peut_jouer() and othellier.peut_jouer():
+
         #print(othellier.joueur)
         # Il se peut que le joueur ne puisse pas jouer. 
         # On vérifie avec cette fontion : 
@@ -111,8 +112,11 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
             #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
         else : 
+
             #print("Joueur {joueur} tu ne peux pas jouer, passe ton tour ... ".format(joueur = othellier.joueur[0]))
             othellier.joueur, othellier.adversaire = othellier.adversaire, othellier.joueur
+            if othellier.peut_jouer() == False:
+                return othellier.qui_gagne()
             #print(" C'est au tour de joueur {joueur}".format(joueur = othellier.joueur[0]))
 
     #print("C'est la fin de la partie!")
