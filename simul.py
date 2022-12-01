@@ -56,15 +56,18 @@ def simul():
         prof_test[p-1, 1] = gain_A  / nombre_partie #pourcentage partie perdue
         prof_test[p-1, 2] = egalite  / nombre_partie #pourcentage partie égalité
 
-    list1 = prof_test[:,0]
-    list2 = prof_test[:,1]
-    list3 = prof_test[:,2]
-    col1 = "Gain Algo"
-    col2 = "Perte Algo"
-    col3 = "Egalité"
+    list1 = [i for i in range(1, profondeur+1)]
+    list2 = prof_test[:,0]
+    list3 = prof_test[:,1]
+    list4 = prof_test[:,2]
+    
+    col1 = "Profondeur"
+    col2 = "Gain Algo"
+    col3 = "Perte Algo"
+    col4 = "Egalité"
 
 
-    data = pd.DataFrame({col1:list1,col2:list2, col3:list3})
+    data = pd.DataFrame({col1:list1,col2:list2, col3:list3, col4:list4})
     data.to_excel('resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
 
     # faire un histogramme à partir du dictionnaire prof_test : en abscisse les profondeurs 
@@ -73,4 +76,3 @@ def simul():
     print("--- %s seconds ---" % (time.time() - start_time))
 
 simul()
-
