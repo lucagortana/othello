@@ -47,7 +47,7 @@ oth_min_max[2,2] = 2
 #minmax = MinMax(othellier, 3, 1, gains = [], chemin = [], profondeurs = [])
 
 #partie(False, 'MCTS', True,'minmax')
-partie(False, 'MCTS', 3, True, None, None) 
+partie(False, 'MCTS', 4, True, None, None) 
 
 # rappel des paramètres : 
 # partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
