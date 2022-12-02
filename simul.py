@@ -122,7 +122,7 @@ def simul():
                 col3 = "Perte Algo"
                 col4 = "Egalité"
                 data = pd.DataFrame({col1:list1,col2:list2, col3:list3, col4:list4})
-                data.to_excel('resultats_simulations/resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
+                data.to_excel('resultats_simulations/resultat_othello_{algo}_nbp_{nb}.xlsx'.format(algo=type_algo, nb=nombre_partie), sheet_name='sheet1', index=False)
 
             else:
                 prof_test=np.zeros([len(choix_c), 3])
@@ -166,14 +166,68 @@ def simul():
                 list2 = prof_test[:,0]
                 list3 = prof_test[:,1]
                 list4 = prof_test[:,2]
+                list5 = [profondeur] + (len(choix_c)-1)*["-"]
                 
                 col1 = "Valeur C"
                 col2 = "Gain Algo"
                 col3 = "Perte Algo"
                 col4 = "Egalité"
+                col5 = "Profondeur"
 
-                data = pd.DataFrame({col1:choix_c,col2:list2, col3:list3, col4:list4})
-                data.to_excel('resultats_simulations/resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
+                data = pd.DataFrame({col1:choix_c,col2:list2, col3:list3, col4:list4, col5:list5})
+                data.to_excel('resultats_simulations/resultat_othello_{algo}_nbp_{nb}.xlsx'.format(algo=type_algo, nb=nombre_partie), sheet_name='sheet1', index=False)
+
+        else:
+            prof_test=np.zeros([profondeur, len(choix_c)])
+
+            for p in range(1, profondeur+1):
+                print('nous en sommes à la profondeur {p}'.format(p=p))
+
+                for c in choix_c:
+                    print('Nous en sommes à la valeur c = ', c)
+                    gain_A = 0
+                    gain_B = 0
+                    egalite = 0
+
+                    for nb_partie in range(nombre_partie):
+                        print('nb_partie=', nb_partie)
+                        joueur_A = None
+                        joueur_B = type_algo
+                        if nb_partie%2 ==0: # une partie sur 2 c'est le joueur A qui commence 
+                            print('Joueur_A commence')
+                            #gagnant = partie(False, None, 1, False, joueur_B, p) 
+                            gagnant = partie(joueur1 = False , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = joueur_B, prof_algo_j2 = p, valeur_c = c)
+                            # rappel des paramètres : partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3)
+                            
+                            if gagnant == 1:
+                                gain_A += 1
+                            elif gagnant == 2:
+                                gain_B += 1
+                            else:
+                                egalite += 1 
+                        if nb_partie%2 !=0: # une partie sur 2 c'est le joueur B qui commence 
+                            print('Joueur_B commence')
+                            gagnant = partie(joueur1 = False , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = joueur_B, prof_algo_j2 = p, valeur_c = c)
+                            
+                            if gagnant == 1:
+                                gain_B += 1
+                            elif gagnant == 2:
+                                gain_A += 1
+                            else:
+                                egalite += 1 
+
+                    prof_test[p-1, position(c, choix_c)] = gain_B  / nombre_partie #pourcentage partie gagnée
+
+            col1 = "Profondeur"
+            dico_results = {col1:[i for i in range(1, profondeur+1)]}
+            for i in range(len(choix_c)):
+                list_ = prof_test[:, i]
+                col_ = "{c}".format(c=choix_c[i])
+                dico_results[col_] = list_
+
+            data = pd.DataFrame(dico_results)
+            data.to_excel('resultats_simulations/resultat_othello_{algo}_nbp_{nb}.xlsx'.format(algo=type_algo, nb=nombre_partie), sheet_name='sheet1', index=False)
+
     else:
         prof_test=np.zeros([profondeur, 3])
 
@@ -226,7 +280,7 @@ def simul():
 
 
         data = pd.DataFrame({col1:list1,col2:list2, col3:list3, col4:list4})
-        data.to_excel('resultats_simulations/resultat_othello_{algo}.xlsx'.format(algo=type_algo), sheet_name='sheet1', index=False)
+        data.to_excel('resultats_simulations/resultat_othello_{algo}_nbp_{nb}.xlsx'.format(algo=type_algo, nb=nombre_partie), sheet_name='sheet1', index=False)
 
     # faire un histogramme à partir du dictionnaire prof_test : en abscisse les profondeurs 
     # pour chaque profondeur 2 barres : une pour "parties gagnées par A et l'autre parties gagnées par B 
