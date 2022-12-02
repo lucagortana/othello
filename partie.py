@@ -7,7 +7,7 @@ import random as rd
 from random import randint 
 
 
-def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3):
+def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3, valeur_c = 1):
 
     # On crée un othellier :
     # en début de partie, l'othellier est tel que : 
@@ -102,7 +102,7 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                     othellier.tour(meilleure_case) # on joue la case 
                 
                 elif othellier.joueur[2] == 'MCTS':
-                    meilleure_case = MCTS(othellier, othellier.joueur[3], 1.14)
+                    meilleure_case = MCTS(othellier, othellier.joueur[3], valeur_c)
                     othellier.tour(meilleure_case)
                 else : 
                     print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
