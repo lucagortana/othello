@@ -65,7 +65,7 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                     meilleure_case = chemin_filtres[indice_top_gain] # on choisit la case qui a la meilleure promesse de gain selon minmax 
                     othellier.tour(meilleure_case) # on joue la case 
 
-                elif othellier.joueur[2] == None: # aucun algorithme n'est proposé 
+                elif othellier.joueur[2] == 'ref': # aucun algorithme n'est proposé 
                     # --> le joueur va jouer la case qui donne le plus de points pour ce tour 
                     # sans considérer plus loin --> un minmax à un seul étage (ie prof = 1 )
                     minmax = MinMax(othellier, 1, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
@@ -104,6 +104,9 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                 elif othellier.joueur[2] == 'MCTS':
                     meilleure_case = MCTS(othellier, othellier.joueur[3], valeur_c)
                     othellier.tour(meilleure_case)
+                elif othellier.joueur[2] == None:
+                    choix = rd.choice(othellier.promesses_de_gain().keys()) # on choisit au hasard 
+                    othellier.tour(choix)
                 else : 
                     print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
                     print("Il ne peut donc pas jouer, veuillez recommencer.")
