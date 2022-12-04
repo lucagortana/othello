@@ -104,13 +104,14 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                 elif othellier.joueur[2] == 'MCTS':
                     meilleure_case = MCTS(othellier, othellier.joueur[3], valeur_c)
                     othellier.tour(meilleure_case)
+                    
                 elif othellier.joueur[2] == None:
                     choix = rd.choice(othellier.promesses_de_gain().keys()) # on choisit au hasard 
                     othellier.tour(choix)
                 else : 
                     print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
                     print("Il ne peut donc pas jouer, veuillez recommencer.")
-                    print("Redonnez un algorithme à l'ordinateur parmi les suivants : None, 'minmax', 'alphaBeta', 'MCTS")
+                    print("Redonnez un algorithme à l'ordinateur parmi les suivants : None, 'minmax', 'alphaBeta', 'MCTS' ou 'ref'")
                     print("Attention à respecter la casse !! ")
                     exit()
 
