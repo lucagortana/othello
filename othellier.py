@@ -159,13 +159,13 @@ class Othellier:
         Cette fonction renvoie le numéro du joueur gagnant
         '''
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
-            print("joueur 1 gagne")
+            #print("joueur 1 gagne")
             return 1
         elif np.where(self.cases == 1, True, False).sum() < np.where(self.cases == 2, True, False).sum() : 
-            print("joueur 2 gagne")
+            #print("joueur 2 gagne")
             return 2
         else : 
-            print("égalité !!")
+            #print("égalité !!")
             return 0 
 
     def tour(self, choix):

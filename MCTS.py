@@ -35,14 +35,12 @@ MCTS indiquera son successeur qui présente le meilleur w/n
 class noeud:
     def __init__(self, othellier, case, n, w, parent):
         self.othellier = othellier 
-        self.feuille = True # True si le noeud est une feuille (ie plus de place sur l'othellier, ou bien pas de successeurs générés)
         self.n = n 
         self.w = w 
         self.parent = parent # un objet appartenant à la classe noeud 
         self.case = case
-        #self.case_a_jouer = list(othellier.promesses_de_gain().keys()) # tous les moves qui menent à un succeseur 
         self.successeurs = []
-        # N = pere.n 
+        # N = parent.n 
 
     def UCB(self, C): #selection
         try: 
@@ -52,9 +50,7 @@ class noeud:
             return + 10000 
     
     def play_out(self):
-        #print('coucou')
         while (self.othellier.cases == 0).any(): # on va jusqu'à finir la partie 
-            #print("je rentre dans le while")
             if len(self.othellier.promesses_de_gain().keys()) == 0:
                 return self.othellier.qui_gagne()
             choix = rd.choice(list(self.othellier.promesses_de_gain().keys()))
@@ -168,6 +164,6 @@ def MCTS(othellier, nb_iter, C):
         except ZeroDivisionError:
             pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
 
-    print('MCTS a choisi la case', s.case)
+    #print('MCTS a choisi la case', s.case)
     return s.case
 

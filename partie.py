@@ -7,7 +7,7 @@ import random as rd
 from random import randint 
 
 
-def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3, valeur_c = 1):
+def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3, valeur_c = 1.414):
 
     # On crée un othellier :
     # en début de partie, l'othellier est tel que : 
@@ -68,7 +68,9 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                 elif othellier.joueur[2] == 'ref': # aucun algorithme n'est proposé 
                     # --> le joueur va jouer la case qui donne le plus de points pour ce tour 
                     # sans considérer plus loin --> un minmax à un seul étage (ie prof = 1 )
+                    #print('coucou')
                     minmax = MinMax(othellier, 1, othellier.joueur[0], gains = [], chemin = [], profondeurs = [])
+                    # MinMax(othellier, prof, maximizing_player, gains, chemin, profondeurs):
                     gains = minmax[1]
                     chemin = minmax[2]
                     profondeurs = minmax[3]
@@ -104,10 +106,11 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                 elif othellier.joueur[2] == 'MCTS':
                     meilleure_case = MCTS(othellier, othellier.joueur[3], valeur_c)
                     othellier.tour(meilleure_case)
-                    
+
                 elif othellier.joueur[2] == None:
-                    choix = rd.choice(othellier.promesses_de_gain().keys()) # on choisit au hasard 
+                    choix = rd.choice(list(othellier.promesses_de_gain().keys())) # on choisit au hasard 
                     othellier.tour(choix)
+                    #print('ici')
                 else : 
                     print("Vous n'avez pas bien renseigné l'algorithme que l'ordinateur doit utiliser. ")
                     print("Il ne peut donc pas jouer, veuillez recommencer.")
