@@ -88,7 +88,6 @@ class noeud:
         self.feuille = False
         
 
-
 def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
     '''
     othellier = l'othellier pour lequel on veut faire l'évaluation
@@ -99,8 +98,6 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
     noeud_racine = noeud(oth_racine, None, n=0, w=0, parent=None)
     noeud_racine.genere_successeurs()
     
-
-
     # On commence les iterations 
     for i in range(nb_iter):
         noeud_courant = noeud_racine # on part de la racine de l'arbre 
@@ -174,17 +171,47 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
     #successeurs = list(rd.shuffle(noeud_racine.successeurs))
     #print(type(successeurs))
     #rd.shuffle(noeud_racine.successeurs)
+    best = {}
     for s in noeud_racine.successeurs: # on shuffle (?) --> de telle sorte qu'en cas d'égalité, ce ne soit pas toujours la même case qui soit explorée en premier
+        best[s.case] = (s.w,s.n)
         try:
+            
             if (s.w/s.n) > best_score: # !!! si le nombre d'iterations est inferieure au nombre de successeurs, division par zero !!! 
                 best_s = s 
+                
         except ZeroDivisionError:
             pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
         
     if i == 1:
         print(len(noeud_racine.successeurs))
         print(noeud_racine.successeurs.index(s))
-    #print('MCTS a choisi la case', s.case)
-    #print(boucle)
+    #print('MCTS a choisi al case {case} parmi les successeurs {succ}'.format(case = s.case, succ = [ successeurs.case for successeurs in noeud_racine.successeurs] ))
+    #print('car elle avait le meilleur UCB ? ')
+    #print(best)
+    print(show_tree(noeud_racine))
     return s.case
 
+def afficher_arbre_MCTS(noeud_racine, niveau = 0):
+    '''
+    Cette fonction prend en argument un objet appartenant à la classe noeud et affiche l'arbre représentatif de MCTS.
+    '''
+    
+    # On commence par afficher le noeud racine
+    print('Niveau :', niveau)
+    print('Noeud racine : ')
+    print('Nombre de fois visité : ', noeud_racine.n)
+    print('Nombre de victoires : ', noeud_racine.w)
+    print('Case associée : ', noeud_racine.case)
+    print('\n')
+
+    # On affiche ensuite les successeurs
+    if len(noeud_racine.successeurs) > 0:
+        print('Successeurs : ')
+        for successeur in noeud_racine.successeurs:
+            print('Niveau :', niveau + 1)
+            print('Case associée : ', successeur.case)
+            print('Nombre de fois visité : ', successeur.n)
+            print('Nombre de victoires : ', successeur.w)
+            print('\n')
+            # Appel récursif de la fonction aff
+            afficher_arbre_MCTS(successeur, niveau + 1)
