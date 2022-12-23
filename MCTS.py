@@ -53,10 +53,10 @@ class noeud:
     
     def play_out(self):
         peut_pas_jouer = 0
-        while (self.othellier.cases == 0).any(): # on itère jusqu'à finir la partie 
+        while (self.othellier.cases == 0).any(): # tant qu'il y a une case de libre, on itère 
             if self.othellier.peut_jouer():
                 peut_pas_jouer = 0
-                choix = rd.choice(list(self.othellier.promesses_de_gain().keys()))
+                choix = rd.choice(list(self.othellier.promesses_de_gain().keys())) # choix au hasard de la case à jouer 
                 self.othellier.tour(choix)
                 self.othellier.joueur, self.othellier.adversaire = self.othellier.adversaire, self.othellier.joueur
             else :
@@ -92,7 +92,6 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
     '''
     othellier = l'othellier pour lequel on veut faire l'évaluation
     '''
-    boucle = 0 
     # Initialisation de l'arbre  
     oth_racine = copy.deepcopy(othellier)
     noeud_racine = noeud(oth_racine, None, n=0, w=0, parent=None)
@@ -100,8 +99,8 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
     
     # On commence les iterations 
     for i in range(nb_iter):
+        
         noeud_courant = noeud_racine # on part de la racine de l'arbre 
-
         # On explore l'arbre jusqu'à trouver des feuilles.
         # J'avance dans l'arbre en choisissant le noeud avec le meilleur UCB 
 
@@ -131,20 +130,23 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
 
         # Etant donné que les étapes de propagation vont modifier le noeud courant, on le garde en mémoire grâce à noeud_elu 
         noeud_elu = noeud_courant
+
+        print(noeud_elu.othellier.joueur[0])
         for npo in range(nb_play_out):
             #print("play out")
-            boucle += 1 
             gagnant = noeud_elu.play_out()
             # gagnant vaut 1, 2 ou 0.
             # Or, on souhaite remonter 1 uniquement si le joueur du noeud racine a gagné. 
             # On procède donc ainsi : 
             if gagnant == noeud_racine.othellier.joueur[0]:
+                print('gagnant == noeud_racine.othellier.joueur[0]')
                 result =  1
                 result_adversaire = 0
             elif gagnant == 0: # cas d'égalité 
                 result = 0
                 result_adversaire = 0
             else : 
+                print('gagnant == noeud_racine.othellier.joueur[0]')
                 result = 0
                 result_adversaire = 1
             
@@ -156,20 +158,17 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
 
                 noeud_courant.n += 1 # quel que soit noeud_racine.othellier.joueur[0] on ajoute 1 car le noeud est visité 
                 # La  mise à jour de w est un peu plus compliquée : 
-                # "Si J1 n'a pas gagné son w n'augmente pas, mais J2 a gagné et son w augmente, et inversement + cas particulier des égalités  "
+                # "Si J1 a gagné, le w augmenten'a pas gagné son w n'augmente pas" 
                 if noeud_courant.othellier.joueur[0] == noeud_racine.othellier.joueur[0]:
                     noeud_courant.w += result
-                else: # noeud_courant.othellier.joueur[0] != noeud_racine.othellier.joueur[0]: 
-                    noeud_courant.w += result_adversaire
-
+                #else: # noeud_courant.othellier.joueur[0] != noeud_racine.othellier.joueur[0]: 
+                    #noeud_courant.w += result_adversaire
                 noeud_courant = noeud_courant.parent 
     
     # maintenant que toutes les itérations ont été réalisées, on choisit quelle est la meilleure case à jouer 
     best_s = noeud_racine.successeurs[0] # initialisation 
     best_score = best_s.w / best_s.n # initialisation 
     
-    #successeurs = list(rd.shuffle(noeud_racine.successeurs))
-    #print(type(successeurs))
     #rd.shuffle(noeud_racine.successeurs)
     best = {}
     for s in noeud_racine.successeurs: # on shuffle (?) --> de telle sorte qu'en cas d'égalité, ce ne soit pas toujours la même case qui soit explorée en premier
@@ -182,13 +181,13 @@ def MCTS(othellier, nb_iter, C, nb_play_out = 3 ):
         except ZeroDivisionError:
             pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
         
-    if i == 1:
-        print(len(noeud_racine.successeurs))
-        print(noeud_racine.successeurs.index(s))
+    #if i == 1:
+        #print(len(noeud_racine.successeurs))
+        #print(noeud_racine.successeurs.index(s))
     #print('MCTS a choisi al case {case} parmi les successeurs {succ}'.format(case = s.case, succ = [ successeurs.case for successeurs in noeud_racine.successeurs] ))
     #print('car elle avait le meilleur UCB ? ')
     #print(best)
-    print(show_tree(noeud_racine))
+    #print(show_tree(noeud_racine))
     return s.case
 
 def afficher_arbre_MCTS(noeud_racine, niveau = 0):
