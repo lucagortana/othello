@@ -7,7 +7,7 @@ import random as rd
 from random import randint 
 
 
-def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3, valeur_c = 1.414, nb_play_out = 3 ):
+def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, algo_j2 = None, prof_algo_j2 = 3, valeur_c = 0.5, nb_play_out = 3 ):
 
     # On crée un othellier :
     # en début de partie, l'othellier est tel que : 
