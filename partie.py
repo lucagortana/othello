@@ -104,8 +104,10 @@ def partie(joueur1 = True , algo_j1 = None, prof_algo_j1 = 3, joueur2 = False, a
                     othellier.tour(meilleure_case) # on joue la case 
                 
                 elif othellier.joueur[2] == 'MCTS':
-                    meilleure_case = MCTS(othellier, othellier.joueur[3], valeur_c, nb_play_out)
-                    othellier.tour(meilleure_case)
+                    #print("Début du tour du joueur", othellier.joueur[0])
+                    meilleur_noeud = MCTS(othellier, othellier.joueur[3], valeur_c, nb_play_out)
+                    othellier.tour(meilleur_noeud.case)
+                    #print("Fin du tour")
 
                 elif othellier.joueur[2] == None:
                     choix = rd.choice(list(othellier.promesses_de_gain().keys())) # on choisit au hasard 
