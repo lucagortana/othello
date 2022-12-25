@@ -8,24 +8,23 @@ class Othellier:
     Cette classe modélise l'état du jeu à un moment donné :
     - le plateau de jeu (=l'othellier) 
     - à qui est ce de jouer ? 
+    - vraie parsonne ou ordinateur ? 
+    - si ordinateur : selon quel algorithme ? 
     '''
 
     def __init__(self, cases, joueur1,algo_j1,prof_algo_j1, joueur2, algo_j2,prof_algo_j2):
         self.cases = cases 
         self.joueur = [1] + [joueur1] + [algo_j1] + [prof_algo_j1]   # Le joueur 1 (=les noirs) commence toujours
-        self.adversaire = [2] + [joueur2] + [algo_j2] +[prof_algo_j2] # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
+        self.adversaire = [2] + [joueur2] + [algo_j2] + [prof_algo_j2] # On passe en liste pour ne pas avoir de tuple, qui ne supporte pas le "item assignment" 
 
-        # les valeurs pour joueur1 et joueur2 sont : 
-        # True (si la personne qui joue est réelle) 
-        # False (si c'est un ordinateur qui joue)
-        # la troisième valeur est l'algorithme que va utiliser l'ordinateur 
-        # Si la deuxième valeur == True, il n'est pas nécéssaire de définir d'algorithme. 
-
+        # [1] et [2] signifient "joueur 1 / pions noirs" et "joueur 2 / pions blancs"
+        # les valeurs pour [joueur1] et [joueur2] sont True (si la personne qui joue est réelle) et False (si c'est un ordinateur qui joue)
+        # la 3ème valeur est l'algorithme que va utiliser l'ordinateur. Si la deuxième valeur == True, il n'est pas nécéssaire de définir d'algorithme. 
+        # La 4ème valeur correspond à la profondeur / nombre d'itération utilisés lors de l'execution des algorithmes. 
     
     def case_libre(self, choix):
         '''
-        Cette fonction permet de vérifier, pour un othellier donné, 
-        si la case choisie par le joueur est libre. 
+        Cette fonction permet de vérifier, pour un othellier donné, si la case choisie par le joueur est libre. 
         '''
         try : 
             if self.cases[choix[0], choix[1]] != 0 : 
@@ -89,7 +88,7 @@ class Othellier:
         for sens_ in sens :
 
             captures_temporaires = []
-            for i in range(1,8): # 7 pas dans un sens pour essayer de trouver un binome. 
+            for i in range(1,8): # sept pas dans un sens pour essayer de trouver un binome. 
                 try : 
                     directions = { 'haut' : (choix[0]-i, choix[1]), 
                         'bas' : (choix[0]+i, choix[1]), 
@@ -107,8 +106,8 @@ class Othellier:
 
                         elif self.cases[directions[sens_][0], directions[sens_][1]] == 0 :
                             # si on a trouvé une capture mais qu'il y a un trou ensuite, ça ne compte plus! 
-                            captures_temporaires = []
-                            break # Si il y a un trou, ça casse la dynamique !! 
+                            captures_temporaires = [] # on repart à zéro 
+                            break 
                         
                         if self.cases[directions[sens_][0], directions[sens_][1]] == self.joueur[0] and len(captures_temporaires)>0: # and joueur not in captures_temporaires:
                             binomes.append(directions[sens_])
@@ -147,16 +146,12 @@ class Othellier:
         for case in cases_libres:
             if self.a_des_voisins((case[0],case[1])) and self.a_des_binomes((case[0],case[1]))[0]:
                 peut_jouer = True
-                break # Si il y a au moins un possibilité pour le jouer de jouer, on arrete ici 
+                break # Si il y a au moins une possibilité pour le jouer de jouer, on arrete ici 
         return peut_jouer
-
-    def termine(self):
-        if np.where(self.cases != 0, True, False).sum() == 64:
-            print("toutes les cases ")
 
     def qui_gagne(self):
         '''
-        Cette fonction renvoie le numéro du joueur gagnant
+        Cette fonction renvoie le numéro du joueur gagnant (1 ou 2) ou 0 en cas d'égalité
         '''
         if np.where(self.cases == 1, True, False).sum() > np.where(self.cases == 2, True, False).sum():
             #print("joueur 1 gagne")
@@ -180,8 +175,6 @@ class Othellier:
         # --------------------- choix de la case ----------------------------
         
         # Il ne peut pas entrer n'importe quelle case : 
-        
-        
         while est_sur_othellier(choix) == False or \
         self.case_libre(choix) == False or \
         self.a_des_voisins(choix) == False or \
@@ -210,7 +203,7 @@ class Othellier:
 
         # Une fois les 4 conditions vérifiées, on peut renvoyer l'othellier avec les nouvelles valeurs 
         #print("Le joueur ", self.joueur[0], " a choisi la case ", (choix[0] + 1 ,choix[1] + 1 ), '. Son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])), "en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
-        #print('Bravo, son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
+        #print('Son coup lui permet de capturer {n_capture} pion(s)'.format(n_capture = len(self.a_des_binomes(choix)[2])))
         #print("en position ", [(self.a_des_binomes(choix)[2][i][0]+1, self.a_des_binomes(choix)[2][i][1]+1) for i in range(len(self.a_des_binomes(choix)[2]))])
         self.mise_a_jour(choix, self.a_des_binomes(choix)[2])
 
@@ -219,19 +212,23 @@ class Othellier:
         for i in range(len(self.cases)):
             for j in range(len(self.cases)):
 
-                if (j==0 or j==7) and (i ==0 or i ==7) : # si on est dans les coins, bonus 
+                if (j==0 or j==7) and (i ==0 or i ==7) : # si on est dans les coins : bonus 
                     if self.cases[i,j] == self.joueur[0]:
-                        nb += 100
+                        #nb += 100 # valeur originale 
+                        nb += 0
                 
-                elif (i== 0 or i ==7 ) or (j==0 or j==7):   # si on est sur les bords hors coins et proches-coins
+                elif (i== 0 or i ==7 ) or (j==0 or j==7):   # si on est sur les bords (hors coins et proches-coins)
                     if self.cases[i,j] == self.joueur[0]:
-                        nb += 20
+                        #nb += 20 # valeur originale 
+                        nb += 0
 
-                elif ((i ==1 or i==0 or i==6 or i ==7) and ( j==0 or j==1 or j==6 or j==7 )) and not ((i== 0 or i ==7 ) and (j==0 or j==7)) :
+                elif ((i ==1 or i==0 or i==6 or i ==7) and ( j==0 or j==1 or j==6 or j==7 )) and not ((i== 0 or i ==7 ) and (j==0 or j==7)) : # si on offre à l'adversaire une chance d'aller trouver un bord ou un coin : malus 
                     if self.cases[i,j] == self.joueur[0]:
-                        nb -= 30
+                        #nb -= 30 # valeur originale 
+                        nb -= 0
 
-        return nb , None, None
+        return nb , None, None # None et None pour des questions de format 
+      
 
     def promesses_de_gain(self):
         '''
@@ -256,19 +253,11 @@ class Othellier:
         '''
 
         if self.joueur[1] == True: 
-            #promesse_gain = self.fonction_evaluation()
-            #for i in range(0,8):
-            #    for j in range(0,8):
-            #        case = [i,j]
-            #        if self.cases[i][j] == 0:
-            #            if len(promesse_gain[(i,j)]) > 0:
-            #                print('La position ', (i + 1, j + 1), ' a une promesse de gain de ', len(promesse_gain[(i,j)]))
-            choix_ = False # Tant que le choix entrée n'est pas sous la bonne forme, on garde choix_ = False
+            choix_ = False # Tant que le choix entré n'est pas sous la bonne forme, on garde choix_ = False
             while choix_ == False:
                 choix = input('joueur {joueur}, où veux tu placer ton pion ? '.format(joueur = self.joueur[0]))
-                # input fournit un str --> on fait en sorte d'avoir une liste 
                 try:
-                    choix = [int(item) for item in choix.split(',')]
+                    choix = [int(item) for item in choix.split(',')] # input fournit un str --> on fait en sorte d'avoir une liste 
                     # On réindexe le choix du joueur pour avoir une indexation à 0 (python-compatible)
                     choix[0] = choix[0] - 1 # Réindexage de la ligne 
                     choix[1] = choix[1] - 1 # Réindexage de la colonne 
@@ -279,20 +268,18 @@ class Othellier:
                 except IndexError:
                     print("Merci de choisir des chiffres entre 1 et 8")
         
-        else : 
+        else : # OUT-DATED : Maintenant, avec MinMax/AlphaBeta/MCTS, on ne rentre plus jamais dans cette boucle. 
             # Dans le cas où c'est l'ordinateur qui joue, il choisit une case au hasard.
-            # Si la case ne permet pas de jouer, il choisira de nouveau. 
+            # Si la case ne permet pas de jouer, il choisira de nouveau jusqu'à ce que ça fonctionne 
             choix = [rd.randint(0,7), rd.randint(0,7)]
 
         return choix 
-
-
 
 # -------------------------------------- FONCTIONS -----------------------------------------
 
 def est_sur_othellier(choix):
     '''
-    Vérifier que la case choisie est bien sur un othellier 
+    Vérifier que la case choisie par le joueur est bien sur un othellier 
     '''
     if choix[0]>7 or choix[0]<0 or choix[1]>7 or choix[0]<0 : 
         est_sur_othellier = False

@@ -5,12 +5,10 @@ from math import log , sqrt
 import random as rd 
 
 
-'''
+''' RAPPELS 
 I - Selection : 
-Choisir un neoud successeur tout en respectant un équilibre exploration/exploitation 
-Le successeur i choisi est le successeur dont la valeur suivante est maximale :
- 
-(w/n) + c * sqrt( ln(N) /n )
+Choisir un noeud successeur tout en respectant un équilibre exploration/exploitation 
+Le successeur i choisi est le successeur dont la valeur suivante est maximale : (w/n) + c * sqrt( ln(N) /n )
 Avec : 
     w = nombre de win 
     n = nombre de fois où i a été visité 
@@ -21,37 +19,34 @@ Le terme w/n représente l'exploitation
 Le terme c * sqrt( ln(N) /n ) représente l'exploration 
 
 II - Expansion
-
 III - Simulation
-
 IV - Backpropagation 
-
 V - Fin des itérations 
 
 MCTS retournera son successeur qui présente le meilleur w/n 
-
 '''
-# programmation objet des noeuds 
+
+# MCTS et représenté sous forme d'arbre. 
+# Nous avons choisi une programmation objet pour les noeuds constitutifs de l'arbre
 
 class noeud:
     def __init__(self, othellier, case, n, parent):
         self.othellier = othellier 
         self.n = n 
-        self.w = {1 : 0, 2 : 0, 0 : 0 } # 3 clés : 1, 2, ou 0 qui comptabilise ls parties gagnées par le jouer 1, ou 2 ou égalités
-        self.parent = parent # un objet appartenant à la classe noeud 
+        self.w = {1 : 0, 2 : 0, 0 : 0 } # un dictionnaire avec 3 clés : 1, 2, ou 0 qui comptabilise les parties gagnées par le joueur 1, par le joueur 2 et les égalités
+        self.parent = parent # un objet appartenant à la classe noeud. Nécéssaire pour la rétro-propagation
         self.case = case # "case" permet de savoir quelle case jouer pour passer du noeud parent à ce noeud / le chemin à suivre dans l'arbre 
         self.successeurs = [] # la liste des sucesseurs n'est remplie que plus tard. 
-                              # Une liste successeurs vide signifie que le noeud est un neoud feuille 
-        # N = parent.n 
+                              # Une liste successeurs vide signifie que le noeud est un noeud feuille 
 
-    def UCB(self, C, joueur): #selection
+    def UCB(self, C, joueur): # Upper Confidence Bound : pour la selection des noeuds 
         try: 
             return self.w[joueur]/self.n + C * sqrt( log(self.parent.n) /self.n )
         except:
-            # Si n = 0, UCB vaut + l'infini 
+            # Si n = 0, UCB vaut en théorie + l'infini
             return + 10000 
     
-    def play_out(self):
+    def play_out(self): # Réaliser les parties aléatoires pour les "roll out".  
         peut_pas_jouer = 0
         while (self.othellier.cases == 0).any(): # tant qu'il y a une case de libre, on itère 
             if self.othellier.peut_jouer():
@@ -65,7 +60,6 @@ class noeud:
                 peut_pas_jouer +=1 
                 if peut_pas_jouer == 2:
                     return self.othellier.qui_gagne()
-        
         return self.othellier.qui_gagne()
     
     def genere_successeurs(self):
@@ -77,32 +71,25 @@ class noeud:
             oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
             # on ajoute au noeud parent le successeur que l'on vient de créer 
             self.successeurs.append(noeud(oth_fils, case, n=0, parent=self)) 
-
-
-    def genere_successeur(self, case):
-        oth_fils = copy.deepcopy(self.othellier)
-        oth_fils.mise_a_jour(case, self.othellier.a_des_binomes(case)[2])
-        oth_fils.joueur, oth_fils.adversaire = oth_fils.adversaire, oth_fils.joueur
-        self.successeurs.append(noeud(oth_fils, case, n=0, parent=self))
-        self.case_a_jouer.remove(case)
-        self.feuille = False
         
 
 def MCTS(othellier, nb_iter, C, nb_play_out):
     '''
-    othellier = l'othellier pour lequel on veut faire l'évaluation
+    othellier = l'othellier pour lequel on veut faire l'évaluation (= othellier racine)
+    nb_iter = le nombre d'itérations qui vont être réalisées
+    nb_play_out = le nombre de parties jouées lors de la phase 'Simulations'
     '''
     # Initialisation de l'arbre  
-    oth_racine = copy.deepcopy(othellier)
+    oth_racine = copy.deepcopy(othellier) # deepcopy pour ne pas altérer l'objet en lui même 
     noeud_racine = noeud(oth_racine, None, n=0, parent=None)
     noeud_racine.genere_successeurs()
-    
+
     # On commence les iterations 
     for i in range(nb_iter):
         
-        noeud_courant = noeud_racine # on part de la racine de l'arbre 
+        noeud_courant = noeud_racine # On part de la racine de l'arbre 
         # On explore l'arbre jusqu'à trouver des feuilles.
-        # J'avance dans l'arbre en choisissant le noeud avec le meilleur UCB 
+        # On avance dans l'arbre en choisissant le noeud avec le meilleur UCB.
 
         # I - Selection 
         while len(noeud_courant.successeurs) > 0 :
@@ -116,7 +103,7 @@ def MCTS(othellier, nb_iter, C, nb_play_out):
         # 2 possibilités : 
         # a - Il a été exploré une fois mais pas développé (noeud_courant.n == 1) 
         #     --> on le developpe et on réalisera un play_out sur un de ces successeurs 
-        # b - il n'a jamais été exploré du tout (ie noeud_courant.n == 0) Dans ce cas on va réaliser un play out 
+        # b - il n'a jamais été exploré du tout (ie noeud_courant.n == 0). Dans ce cas on va réaliser un play out. 
     
         if noeud_courant.n != 0:
             noeud_courant.genere_successeurs() # on developpe le noeud = II - EXPANSION
@@ -129,66 +116,36 @@ def MCTS(othellier, nb_iter, C, nb_play_out):
 
         # Etant donné que les étapes de propagation vont modifier le noeud courant, on le garde en mémoire grâce à noeud_elu 
         noeud_elu = noeud_courant
-        #print("noeud_elu 1 ", noeud_elu)
 
-        # #print(noeud_elu.othellier.joueur[0])
         for npo in range(nb_play_out):
-            gagnant = noeud_elu.play_out()
-        #     #print(gagnant)
-        #     #print(noeud_racine.othellier.joueur[0])
-        #     # gagnant vaut 1, 2 ou 0.
-        #     # Or, on souhaite remonter +1 à la racine uniquement si le joueur du noeud racine a gagné. 
-        #     # On procède donc ainsi : 
-        #     if gagnant == noeud_racine.othellier.joueur[0]:
-        #         #print('gagnant == noeud_racine.othellier.joueur[0]')
-        #         result = 1
-        #     elif gagnant == 0: # cas d'égalité 
-        #         result = 0
-        #     else : 
-        #         #print('gagnant != noeud_racine.othellier.joueur[0]')
-        #         result = 1
+            gagnant = noeud_elu.play_out() # III - Simulations 
 
-            
-            # III - rétropropagation 
-            #print(" w avant backprop ", noeud_racine.w)
+            # IV - rétropropagation 
             while noeud_courant != None:
 
                 noeud_courant.n += 1 # quel que soit noeud_racine.othellier.joueur[0] on ajoute 1 car le noeud est visité 
-                # La  mise à jour de w est un peu plus compliquée : 
-                # Si le joueur 1 a gagné, on ajoute +1 dans w[1]. 0 l'inverse, si J2 a gagné, on ajoute +1 à w[2].
-                # En cas d'égalité, on ajoute +1 à w[0]
+                # La  mise à jour de w est un peu plus compliquée : # Si le joueur 1 a gagné, on ajoute +1 dans w[1]. 
+                # À l'inverse, si J2 a gagné, on ajoute +1 à w[2]. En cas d'égalité, on ajoute +1 à w[0]
                 noeud_courant.w[gagnant] += 1
-                #else: # noeud_courant.othellier.joueur[0] != noeud_racine.othellier.joueur[0]: 
-                    #noeud_courant.w += result_adversaire
                 noeud_courant = noeud_courant.parent 
-            #print(" w après backprop ", noeud_racine.w)
+
             # on replace le noeud courant à celui de départ pour que le play out se fasse sur le meme noeud 
             noeud_courant = noeud_elu  
-            #print("noeud_elu 2 ", noeud_courant)
-            
-    # maintenant que toutes les itérations ont été réalisées, on choisit quelle est la meilleure case à jouer 
+
+    # maintenant que toutes les itérations ont été réalisées, on choisit quelle est la meilleure case à jouer.
+    # En utilisant noeud_racine.othellier.joueur[0], on se place du point de vue du joeur qui utilise MCTS 
     best_s = noeud_racine.successeurs[0] # initialisation 
-    # noeud_racine.othellier.joueur[0]  = on se place du point de vue du joeur qui utilise MCTS 
     best_score = best_s.w[noeud_racine.othellier.joueur[0]] / best_s.n # initialisation 
     
-    #rd.shuffle(noeud_racine.successeurs)
+    #rd.shuffle(noeud_racine.successeurs) # on shuffle (?) --> de telle sorte qu'en cas d'égalité, ce ne soit pas toujours la même case qui soit explorée en premier
     best = {}
-    for s in noeud_racine.successeurs: # on shuffle (?) --> de telle sorte qu'en cas d'égalité, ce ne soit pas toujours la même case qui soit explorée en premier
-        best[s.case] = (s.w[noeud_racine.othellier.joueur[0]],s.n)
+    for s in noeud_racine.successeurs: 
+        best[s.case] = (s.w[noeud_racine.othellier.joueur[0]] , s.n)
         try:
-            
-            if (s.w[noeud_racine.othellier.joueur[0]]/s.n) > best_score: # !!! si le nombre d'iterations est inferieure au nombre de successeurs, division par zero !!! 
+            if (s.w[noeud_racine.othellier.joueur[0]]/s.n) > best_score: 
                 best_s = s 
-                
         except ZeroDivisionError:
             pass # si s.n == 0 --> c'est que le successeur n'a pas été visité --> on ne le considère pas 
-    # print('')
-    # print("MCTS est utilise par le joueur ", noeud_racine.othellier.joueur[0])
-    # print(" w fin iter", noeud_racine.w)
-    # print(noeud_racine.othellier.cases)
-    # print("successeurs", [s.case for s in noeud_racine.successeurs])
-    # print(best)
-    # print("MCTS a choisi la case ",best_s.case )
 
     return best_s
 
