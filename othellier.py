@@ -214,18 +214,15 @@ class Othellier:
 
                 if (j==0 or j==7) and (i ==0 or i ==7) : # si on est dans les coins : bonus 
                     if self.cases[i,j] == self.joueur[0]:
-                        #nb += 100 # valeur originale 
-                        nb += 0
+                        nb += 100
                 
                 elif (i== 0 or i ==7 ) or (j==0 or j==7):   # si on est sur les bords (hors coins et proches-coins)
                     if self.cases[i,j] == self.joueur[0]:
-                        #nb += 20 # valeur originale 
-                        nb += 0
+                        nb += 20 
 
                 elif ((i ==1 or i==0 or i==6 or i ==7) and ( j==0 or j==1 or j==6 or j==7 )) and not ((i== 0 or i ==7 ) and (j==0 or j==7)) : # si on offre à l'adversaire une chance d'aller trouver un bord ou un coin : malus 
                     if self.cases[i,j] == self.joueur[0]:
-                        #nb -= 30 # valeur originale 
-                        nb -= 0
+                        nb -= 30
 
         return nb , None, None # None et None pour des questions de format 
       
