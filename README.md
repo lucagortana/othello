@@ -1,6 +1,6 @@
 # Othello
 
-School project in articifial intelligence 
+School project in artificial intelligence 
 
 The main objective is to implement the following algorithms: 
 - MinMax 
